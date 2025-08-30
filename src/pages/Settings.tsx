@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Settings as SettingsIcon, Bell, Moon, Sun, Globe, Shield, Database } from 'lucide-react';
+import { useState } from 'react';
+import { Bell, Moon, Sun, Shield, Database } from 'lucide-react';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
