@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Send, Bot, User, Clock, MessageSquare } from 'lucide-react';
 
-// Defina a URL do webhook do n8n aqui
-const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'COLOQUE_AQUI_SUA_WEBHOOK_URL';
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
 interface Message {
   role: 'user' | 'assistant';
