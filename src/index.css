@@ -81,3 +81,88 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Estilos específicos para Markdown */
+.markdown-content {
+  @apply text-sm leading-relaxed;
+}
+
+.markdown-content h1:first-child,
+.markdown-content h2:first-child,
+.markdown-content h3:first-child {
+  @apply mt-0;
+}
+
+.markdown-content p:last-child {
+  @apply mb-0;
+}
+
+.markdown-content ul:last-child,
+.markdown-content ol:last-child {
+  @apply mb-0;
+}
+
+.markdown-content pre:last-child {
+  @apply mb-0;
+}
+
+.markdown-content blockquote:last-child {
+  @apply mb-0;
+}
+
+/* Melhorias para código inline */
+.markdown-content code:not(pre code) {
+  @apply bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono break-words;
+}
+
+/* Estilos para listas de tarefas (checkboxes) */
+.markdown-content input[type="checkbox"] {
+  @apply mr-2 accent-blue-600;
+}
+
+/* Melhorias para tabelas */
+.markdown-content table {
+  @apply border-collapse;
+}
+
+.markdown-content th {
+  @apply font-semibold;
+}
+
+/* Estilos para links */
+.markdown-content a {
+  @apply transition-colors duration-200;
+}
+
+.markdown-content a:hover {
+  @apply text-blue-800;
+}
+
+/* Estilos para blockquotes */
+.markdown-content blockquote {
+  @apply border-l-4 border-blue-500 pl-4 py-2 bg-blue-50 rounded-r-lg;
+}
+
+/* Melhorias para código com syntax highlighting */
+.markdown-content pre {
+  @apply relative;
+}
+
+.markdown-content pre code {
+  @apply bg-transparent p-0 text-sm;
+}
+
+/* Estilos para elementos de lista */
+.markdown-content ul li {
+  @apply relative;
+}
+
+.markdown-content ol li {
+  @apply relative;
+}
+
+/* Espaçamento melhorado para elementos de lista */
+.markdown-content ul li:not(:last-child),
+.markdown-content ol li:not(:last-child) {
+  @apply mb-1;
+}

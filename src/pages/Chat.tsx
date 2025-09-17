@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Send, Bot, User, Clock, MessageSquare } from 'lucide-react';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 
 const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
@@ -26,7 +27,7 @@ const Chat = () => {
       setMessages([
         {
           role: 'assistant',
-          content: `Olá ${user?.name || 'usuário'}! 👋\n\nSou seu assistente de estudos personalizado. Posso te ajudar com:\n\n• 📚 Explicações de conceitos\n• 🧮 Resolução de exercícios\n• 📝 Revisão de conteúdo\n• 🎯 Dicas de estudo\n• ❓ Responder suas dúvidas\n\nComo posso te ajudar hoje?`,
+          content: `Olá ${user?.name || 'usuário'}! 👋\n\nSou seu assistente de estudos personalizado.\n\n• 📚 Me conte sobre sua prova e vamos elaborar um plano de estudos!`,
           timestamp: new Date()
         }
       ]);
@@ -150,7 +151,11 @@ const Chat = () => {
                         : 'bg-blue-600 text-white'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+                    {message.role === 'assistant' ? (
+                      <MarkdownRenderer content={message.content} />
+                    ) : (
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+                    )}
                   </div>
                   <div className={`flex items-center mt-1 text-xs text-gray-500 ${
                     message.role === 'assistant' ? 'justify-start' : 'justify-end'
