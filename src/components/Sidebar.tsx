@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { MessageSquare, Settings, User, LogOut } from 'lucide-react';
+import { MessageSquare, Settings, User, LogOut, History } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Sidebar = () => {
@@ -18,8 +18,12 @@ const Sidebar = () => {
       
       <nav className="flex-1 p-4 space-y-2">
         <NavLink to="/" className={navLinkClasses}>
+          <History className="w-5 h-5 mr-3" />
+          Conversas
+        </NavLink>
+        <NavLink to="/chat" className={navLinkClasses}>
           <MessageSquare className="w-5 h-5 mr-3" />
-          Agente de Estudos
+          Nova Conversa
         </NavLink>
         <NavLink to="/settings" className={navLinkClasses}>
           <Settings className="w-5 h-5 mr-3" />
