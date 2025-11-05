@@ -18,6 +18,7 @@ export interface Database {
           username: string;
           email: string;
           name: string;
+          password_hash: string;
           avatar: string | null;
           created_at: string;
           updated_at: string;
@@ -27,6 +28,7 @@ export interface Database {
           username: string;
           email: string;
           name: string;
+          password_hash: string;
           avatar?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -36,6 +38,7 @@ export interface Database {
           username?: string;
           email?: string;
           name?: string;
+          password_hash?: string;
           avatar?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -101,7 +104,28 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      authenticate_user: {
+        Args: {
+          p_username: string;
+          p_password: string;
+        };
+        Returns: {
+          id: string;
+          username: string;
+          email: string;
+          name: string;
+          avatar: string | null;
+          created_at: string;
+          updated_at: string;
+          password_hash: string;
+        }[];
+      };
+      hash_password: {
+        Args: {
+          password: string;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;

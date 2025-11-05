@@ -23,7 +23,7 @@ const Login = () => {
       if (success) {
         navigate('/');
       } else {
-        setError('Usuário ou senha incorretos. Use usr/1234');
+        setError('Usuário ou senha incorretos.');
       }
     } catch (err) {
       setError('Erro ao fazer login');
@@ -101,13 +101,6 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              <strong>Credenciais de teste:</strong><br />
-              Usuário: <code className="bg-gray-100 px-1 rounded">usr</code><br />
-              Senha: <code className="bg-gray-100 px-1 rounded">1234</code>
-            </p>
-          </div>
         </div>
       </div>
     </div>
