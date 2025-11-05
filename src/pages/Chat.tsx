@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Send, Bot, User, Clock, MessageSquare } from 'lucide-react';
+import { Send, Bot, User, Clock, MessageSquare, Lock } from 'lucide-react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import { ChatService } from '../services/chatService';
+import type { Chat } from '../types/database';
 
 const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
@@ -13,26 +16,99 @@ interface Message {
 
 const Chat = () => {
   const { user } = useAuth();
+  const { chatId } = useParams<{ chatId?: string }>();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState('');
+  const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [loadingChat, setLoadingChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Gera um ID de sessão único quando o chat é iniciado
-    setSessionId(crypto.randomUUID());
+  const loadChat = async (id: string) => {
+    if (!user?.id) return;
 
-    if (messages.length === 0) {
-      setMessages([
-        {
+    setLoadingChat(true);
+    try {
+      const chat = await ChatService.getChat(id);
+      if (!chat) {
+        navigate('/chat');
+        return;
+      }
+
+      // Verificar se o chat pertence ao usuário
+      if (chat.user_id !== user.id) {
+        navigate('/chat');
+        return;
+      }
+
+      setCurrentChat(chat);
+      setIsReadOnly(chat.is_archived);
+
+      // Carregar mensagens
+      const dbMessages = await ChatService.getChatMessages(id);
+      const formattedMessages: Message[] = dbMessages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+      }));
+
+      if (formattedMessages.length === 0) {
+        // Mensagem de boas-vindas se não houver mensagens
+        formattedMessages.push({
           role: 'assistant',
           content: `Olá ${user?.name || 'usuário'}! 👋\n\nSou seu assistente de estudos personalizado.\n\n• 📚 Me conte sobre sua prova e vamos elaborar um plano de estudos!`,
-          timestamp: new Date()
-        }
-      ]);
+          timestamp: new Date(),
+        });
+      }
+
+      setMessages(formattedMessages);
+    } catch (error) {
+      console.error('Erro ao carregar chat:', error);
+      navigate('/chat');
+    } finally {
+      setLoadingChat(false);
     }
-  }, [user]);
+  };
+
+  const createNewChat = async () => {
+    if (!user?.id) return;
+
+    try {
+      const chat = await ChatService.createChat(user.id);
+      if (chat) {
+        setCurrentChat(chat);
+        setIsReadOnly(false);
+        navigate(`/chat/${chat.id}`, { replace: true });
+        
+        // Mensagem de boas-vindas
+        setMessages([
+          {
+            role: 'assistant',
+            content: `Olá ${user?.name || 'usuário'}! 👋\n\nSou seu assistente de estudos personalizado.\n\n• 📚 Me conte sobre sua prova e vamos elaborar um plano de estudos!`,
+            timestamp: new Date(),
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('Erro ao criar chat:', error);
+    }
+  };
+
+  // Carregar chat existente ou criar novo
+  useEffect(() => {
+    if (!user?.id) return;
+
+    if (chatId) {
+      // Carregar chat existente
+      loadChat(chatId);
+    } else {
+      // Criar novo chat
+      createNewChat();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatId, user?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -47,14 +123,17 @@ const Chat = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || isReadOnly || !currentChat) return;
 
-    const newMessage: Message = { 
+    const userMessage: Message = { 
       role: 'user', 
       content: input,
       timestamp: new Date()
     };
-    setMessages(prev => [...prev, newMessage]);
+    
+    // Salvar mensagem do usuário no Supabase
+    await ChatService.addMessage(currentChat.id, 'user', input);
+    setMessages(prev => [...prev, userMessage]);
     
     const currentInput = input;
     setInput('');
@@ -64,7 +143,7 @@ const Chat = () => {
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: currentInput, sessionId: sessionId })
+        body: JSON.stringify({ message: currentInput, chatId: currentChat.id })
       });
       if (!response.ok) throw new Error('Erro ao conectar ao webhook');
       const data = await response.json();
@@ -72,15 +151,15 @@ const Chat = () => {
       // Processa a resposta no formato da webhook
       let reply = 'Sem resposta do servidor.';
       if (Array.isArray(data) && data.length > 0 && data[0].output) {
-        // Lida com a resposta em formato de array: [{ "output": "..." }]
         reply = data[0].output;
       } else if (data && data.output) {
-        // Lida com a resposta em formato de objeto: { "output": "..." }
         reply = data.output;
       } else if (data.reply) {
-        // Fallback para o formato anterior
         reply = data.reply;
       }
+      
+      // Salvar resposta do assistente no Supabase
+      await ChatService.addMessage(currentChat.id, 'assistant', reply);
       
       setMessages(prev => [
         ...prev,
@@ -88,11 +167,16 @@ const Chat = () => {
       ]);
     } catch (error) {
       console.error("Erro detalhado:", error);
+      const errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
+      
+      // Salvar mensagem de erro também
+      await ChatService.addMessage(currentChat.id, 'assistant', errorMessage);
+      
       setMessages(prev => [
         ...prev,
         { 
           role: 'assistant', 
-          content: 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.',
+          content: errorMessage,
           timestamp: new Date()
         }
       ]);
@@ -100,6 +184,14 @@ const Chat = () => {
       setIsLoading(false);
     }
   };
+
+  if (loadingChat) {
+    return (
+      <div className="flex items-center justify-center h-[80vh] w-full max-w-4xl bg-white rounded-lg shadow-lg border">
+        <div className="text-gray-500">Carregando conversa...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-[80vh] w-full max-w-4xl bg-white rounded-lg shadow-lg border">
@@ -110,8 +202,20 @@ const Chat = () => {
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Assistente de Estudos</h2>
-            <p className="text-sm text-gray-600">Sessão: {sessionId.slice(0, 8)}...</p>
+            <div className="flex items-center space-x-2">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {currentChat?.title || 'Assistente de Estudos'}
+              </h2>
+              {isReadOnly && (
+                <div className="flex items-center space-x-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  <Lock className="w-3 h-3" />
+                  <span>Somente leitura</span>
+                </div>
+              )}
+            </div>
+            <p className="text-sm text-gray-600">
+              {currentChat ? `Chat: ${currentChat.id.slice(0, 8)}...` : 'Nova conversa'}
+            </p>
           </div>
         </div>
         <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -192,37 +296,46 @@ const Chat = () => {
       </div>
 
       {/* Área de Input */}
-      <div className="border-t bg-white p-4 rounded-b-lg">
-        <form onSubmit={handleSubmit} className="flex items-end space-x-3">
-          <div className="flex-1">
-            <textarea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              placeholder="Digite sua mensagem..."
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              rows={1}
-              disabled={isLoading}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e as any);
-                }
-              }}
-            />
+      {!isReadOnly ? (
+        <div className="border-t bg-white p-4 rounded-b-lg">
+          <form onSubmit={handleSubmit} className="flex items-end space-x-3">
+            <div className="flex-1">
+              <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Digite sua mensagem..."
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={1}
+                disabled={isLoading}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e as any);
+                  }
+                }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 bg-blue-600 text-white hover:bg-blue-700 h-12 w-12 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </form>
+          
+          <div className="mt-2 text-xs text-gray-500 text-center">
+            Pressione Enter para enviar, Shift+Enter para nova linha
           </div>
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 bg-blue-600 text-white hover:bg-blue-700 h-12 w-12 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </form>
-        
-        <div className="mt-2 text-xs text-gray-500 text-center">
-          Pressione Enter para enviar, Shift+Enter para nova linha
         </div>
-      </div>
+      ) : (
+        <div className="border-t bg-gray-50 p-4 rounded-b-lg">
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+            <Lock className="w-4 h-4" />
+            <span>Esta conversa está arquivada e não pode ser editada.</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

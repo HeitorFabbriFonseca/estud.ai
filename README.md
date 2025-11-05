@@ -6,9 +6,13 @@ Uma aplicação React moderna para assistência de estudos com interface complet
 
 - **Sistema de Login**: Autenticação com usuário e senha
 - **Chat Inteligente**: Interface de conversa com IA para estudos
+- **Histórico de Conversas**: Visualize e gerencie todas as suas conversas
+- **Visualização de Conversas Antigas**: Acesse conversas arquivadas em modo somente leitura
+- **Armazenamento Persistente**: Todas as mensagens são salvas no Supabase
 - **Perfil do Usuário**: Gerenciamento de informações pessoais
 - **Configurações**: Personalização da experiência
 - **Design Responsivo**: Interface moderna e intuitiva
+- **Integração com Supabase**: Banco de dados para persistência de dados
 - **Integração com n8n**: Webhook para processamento de mensagens
 
 ## 🛠️ Tecnologias
@@ -17,6 +21,7 @@ Uma aplicação React moderna para assistência de estudos com interface complet
 - **Vite** para build e desenvolvimento
 - **Tailwind CSS** para estilização
 - **React Router** para navegação
+- **Supabase** para banco de dados e autenticação
 - **Lucide React** para ícones
 - **n8n** para processamento de webhooks
 
@@ -35,15 +40,24 @@ npm install
 
 3. Configure as variáveis de ambiente:
 ```bash
-cp env.example .env.local
+cp .env.example .env.local
 ```
 
-Edite o arquivo `.env.local` e adicione sua URL do webhook do n8n:
+Edite o arquivo `.env.local` e adicione suas credenciais:
 ```
+# URL do Supabase (obrigatório)
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# URL do Webhook do n8n (opcional)
 VITE_N8N_WEBHOOK_URL=https://seu-n8n-instance.com/webhook/estud-ai
 ```
 
-4. Execute o projeto:
+4. Configure o banco de dados Supabase:
+   - Execute as queries SQL do arquivo `database/schema.sql` no SQL Editor do Supabase
+   - Isso criará as tabelas necessárias: `user_info`, `chats` e `messages`
+
+5. Execute o projeto:
 ```bash
 npm run dev
 ```
@@ -91,12 +105,21 @@ src/
 ├── pages/              # Páginas da aplicação
 │   ├── Login.tsx       # Página de login
 │   ├── Chat.tsx        # Interface do chat
+│   ├── ChatHistory.tsx # Histórico de conversas
 │   ├── Profile.tsx     # Perfil do usuário
 │   └── Settings.tsx    # Configurações
+├── services/           # Serviços de integração
+│   ├── chatService.ts  # Serviço de chats e mensagens
+│   └── userService.ts  # Serviço de usuários
 ├── types/              # Definições de tipos TypeScript
-│   └── auth.ts         # Tipos de autenticação
-└── lib/                # Utilitários
-    └── utils.ts        # Funções utilitárias
+│   ├── auth.ts         # Tipos de autenticação
+│   ├── database.ts     # Tipos do banco de dados
+│   └── supabase-database.ts # Tipos do Supabase
+├── lib/                # Utilitários
+│   ├── supabase.ts     # Cliente do Supabase
+│   └── utils.ts        # Funções utilitárias
+└── database/           # Scripts SQL
+    └── schema.sql      # Schema do banco de dados
 ```
 
 ## 🎨 Personalização
