@@ -140,7 +140,12 @@ const Chat = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(WEBHOOK_URL, {
+      if (!WEBHOOK_URL) {
+        throw new Error('Webhook URL não configurada');
+      }
+
+      const webhookUrl: string = WEBHOOK_URL;
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: currentInput, chatId: currentChat.id })
