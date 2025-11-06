@@ -126,6 +126,14 @@ export interface Database {
         };
         Returns: string;
       };
+      change_password: {
+        Args: {
+          p_user_id: string;
+          p_current_password: string;
+          p_new_password: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;

@@ -99,5 +99,34 @@ export class UserService {
 
     return true;
   }
+
+  // Alterar senha do usuário
+  static async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { data, error } = await supabase.rpc('change_password', {
+        p_user_id: userId,
+        p_current_password: currentPassword,
+        p_new_password: newPassword
+      });
+
+      if (error) {
+        console.error('Erro ao alterar senha:', error);
+        return { success: false, error: 'Erro ao alterar senha' };
+      }
+
+      if (data === false) {
+        return { success: false, error: 'Senha atual incorreta' };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      return { success: false, error: 'Erro ao alterar senha' };
+    }
+  }
 }
 
