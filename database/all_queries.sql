@@ -28,7 +28,54 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 4. Função para alterar senha do usuário
+-- 4. Função para autenticar usuário (verifica username e senha)
+-- IMPORTANTE: Esta função é necessária para o login funcionar!
+CREATE OR REPLACE FUNCTION authenticate_user(
+  p_username TEXT,
+  p_password TEXT
+)
+RETURNS TABLE (
+  id UUID,
+  username TEXT,
+  email TEXT,
+  name TEXT,
+  avatar TEXT,
+  created_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ,
+  password_hash TEXT
+) AS $$
+DECLARE
+  v_user RECORD;
+BEGIN
+  -- Buscar usuário pelo username
+  SELECT * INTO v_user
+  FROM user_info
+  WHERE username = p_username;
+
+  -- Se não encontrar usuário, retornar vazio
+  IF NOT FOUND THEN
+    RETURN;
+  END IF;
+
+  -- Verificar senha usando crypt (bcrypt)
+  IF crypt(p_password, v_user.password_hash) = v_user.password_hash THEN
+    RETURN QUERY SELECT 
+      v_user.id,
+      v_user.username,
+      v_user.email,
+      v_user.name,
+      v_user.avatar,
+      v_user.created_at,
+      v_user.updated_at,
+      v_user.password_hash;
+  END IF;
+
+  -- Se a senha não corresponder, retornar vazio
+  RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 5. Função para alterar senha do usuário
 -- Verifica a senha atual antes de permitir a alteração
 CREATE OR REPLACE FUNCTION change_password(
   p_user_id UUID,

@@ -132,7 +132,7 @@ export interface Database {
           p_current_password: string;
           p_new_password: string;
         };
-        Returns: boolean;
+        Returns: boolean | null;
       };
     };
     Enums: {
