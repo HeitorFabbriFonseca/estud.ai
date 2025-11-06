@@ -1,11 +1,73 @@
 import { useState } from 'react';
-import { Bell, Moon, Sun, Shield, Database } from 'lucide-react';
+import { Shield, Info } from 'lucide-react';
+import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
+import { ChatService } from '../services/chatService';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 const Settings = () => {
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('pt-BR');
-  const [autoSave, setAutoSave] = useState(true);
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
+
+  const handleExportData = async () => {
+    if (!user?.id) return;
+
+    setIsExporting(true);
+    try {
+      // Buscar todos os chats e mensagens do usuário
+      const chats = await ChatService.getUserChats(user.id, true);
+      const exportData: any = {
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          email: user.email,
+        },
+        chats: [],
+        exportedAt: new Date().toISOString(),
+      };
+
+      for (const chat of chats) {
+        const messages = await ChatService.getChatMessages(chat.id);
+        exportData.chats.push({
+          ...chat,
+          messages,
+        });
+      }
+
+      // Criar arquivo JSON e fazer download
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `estud-ai-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast('Dados exportados com sucesso!', 'success');
+    } catch (error) {
+      console.error('Erro ao exportar dados:', error);
+      showToast('Erro ao exportar dados', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleClearLocalData = () => {
+    // Limpar localStorage
+    localStorage.clear();
+    showToast('Dados locais limpos com sucesso!', 'success');
+    setShowClearDialog(false);
+    // Recarregar a página para aplicar as mudanças
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
 
   return (
     <div className="flex flex-col h-full w-full bg-white rounded-lg shadow-lg border">
@@ -16,84 +78,6 @@ const Settings = () => {
 
       <div className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Notificações */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <div className="flex items-center mb-4">
-              <Bell className="w-6 h-6 text-blue-600 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900">Notificações</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                <div>
-                  <h3 className="font-medium text-gray-900">Notificações por Email</h3>
-                  <p className="text-sm text-gray-600">Receber notificações sobre novas funcionalidades e atualizações</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={notifications}
-                    onChange={(e) => setNotifications(e.target.checked)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                <div>
-                  <h3 className="font-medium text-gray-900">Notificações Push</h3>
-                  <p className="text-sm text-gray-600">Receber notificações em tempo real no navegador</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* Aparência */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <div className="flex items-center mb-4">
-              {darkMode ? <Moon className="w-6 h-6 text-blue-600 mr-3" /> : <Sun className="w-6 h-6 text-blue-600 mr-3" />}
-              <h2 className="text-xl font-semibold text-gray-900">Aparência</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                <div>
-                  <h3 className="font-medium text-gray-900">Modo Escuro</h3>
-                  <p className="text-sm text-gray-600">Ativar tema escuro para reduzir o cansaço visual</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={darkMode}
-                    onChange={(e) => setDarkMode(e.target.checked)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              
-              <div className="p-4 bg-white rounded-lg border">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Idioma
-                </label>
-                <select 
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="pt-BR">Português (Brasil)</option>
-                  <option value="en-US">English (US)</option>
-                  <option value="es-ES">Español</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
           {/* Dados e Privacidade */}
           <div className="bg-gray-50 rounded-lg p-6">
             <div className="flex items-center mb-4">
@@ -102,35 +86,26 @@ const Settings = () => {
             </div>
             
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                <div>
-                  <h3 className="font-medium text-gray-900">Salvamento Automático</h3>
-                  <p className="text-sm text-gray-600">Salvar automaticamente suas conversas e configurações</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={autoSave}
-                    onChange={(e) => setAutoSave(e.target.checked)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
-              
               <div className="p-4 bg-white rounded-lg border">
                 <h3 className="font-medium text-gray-900 mb-2">Exportar Dados</h3>
                 <p className="text-sm text-gray-600 mb-3">Baixe todos os seus dados em formato JSON</p>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  Exportar Dados
+                <button
+                  onClick={handleExportData}
+                  disabled={isExporting}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isExporting ? 'Exportando...' : 'Exportar Dados'}
                 </button>
               </div>
               
               <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Limpar Dados</h3>
-                <p className="text-sm text-gray-600 mb-3">Remova todos os dados salvos localmente</p>
-                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                  Limpar Dados
+                <h3 className="font-medium text-gray-900 mb-2">Limpar Dados Locais</h3>
+                <p className="text-sm text-gray-600 mb-3">Remova todos os dados salvos localmente (não afeta o banco de dados)</p>
+                <button
+                  onClick={() => setShowClearDialog(true)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Limpar Dados Locais
                 </button>
               </div>
             </div>
@@ -139,7 +114,7 @@ const Settings = () => {
           {/* Sobre */}
           <div className="bg-gray-50 rounded-lg p-6">
             <div className="flex items-center mb-4">
-              <Database className="w-6 h-6 text-blue-600 mr-3" />
+              <Info className="w-6 h-6 text-blue-600 mr-3" />
               <h2 className="text-xl font-semibold text-gray-900">Sobre o EstudAI</h2>
             </div>
             
@@ -162,6 +137,18 @@ const Settings = () => {
           </div>
         </div>
       </div>
+
+      {/* Dialog de Confirmação */}
+      <ConfirmDialog
+        isOpen={showClearDialog}
+        title="Limpar Dados Locais"
+        message="Tem certeza que deseja limpar todos os dados salvos localmente? Isso irá remover apenas os dados do navegador, não afetará o banco de dados."
+        confirmText="Limpar"
+        cancelText="Cancelar"
+        confirmButtonColor="red"
+        onConfirm={handleClearLocalData}
+        onCancel={() => setShowClearDialog(false)}
+      />
     </div>
   );
 };

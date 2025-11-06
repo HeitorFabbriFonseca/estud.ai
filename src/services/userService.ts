@@ -62,6 +62,29 @@ export class UserService {
     return data as UserInfo;
   }
 
+  // Autenticar usuário com username e senha
+  static async authenticateUser(username: string, password: string): Promise<UserInfo | null> {
+    // Usar função RPC do Supabase para autenticar
+    const { data, error } = await supabase.rpc('authenticate_user', {
+      p_username: username,
+      p_password: password
+    });
+
+    if (error) {
+      console.error('Erro ao autenticar usuário:', error);
+      return null;
+    }
+
+    if (data && data.length > 0) {
+      // Retornar usuário sem o password_hash
+      const userData = data[0];
+      const { password_hash, ...userWithoutPassword } = userData;
+      return userWithoutPassword as UserInfo;
+    }
+
+    return null;
+  }
+
   // Atualizar informações do usuário
   static async updateUser(userId: string, updates: Partial<InsertUserInfo>): Promise<boolean> {
     const { error } = await supabase
@@ -75,6 +98,35 @@ export class UserService {
     }
 
     return true;
+  }
+
+  // Alterar senha do usuário
+  static async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { data, error } = await supabase.rpc('change_password', {
+        p_user_id: userId,
+        p_current_password: currentPassword,
+        p_new_password: newPassword
+      });
+
+      if (error) {
+        console.error('Erro ao alterar senha:', error);
+        return { success: false, error: 'Erro ao alterar senha' };
+      }
+
+      if (data === false) {
+        return { success: false, error: 'Senha atual incorreta' };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      return { success: false, error: 'Erro ao alterar senha' };
+    }
   }
 }
 

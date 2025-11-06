@@ -5,6 +5,7 @@ export interface UserInfo {
   username: string;
   email: string;
   name: string;
+  password_hash: string;
   avatar?: string;
   created_at: string;
   updated_at: string;
@@ -33,6 +34,7 @@ export interface InsertUserInfo {
   username: string;
   email: string;
   name: string;
+  password_hash: string;
   avatar?: string;
 }
 

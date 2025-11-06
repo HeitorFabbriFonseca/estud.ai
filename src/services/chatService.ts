@@ -62,11 +62,11 @@ export class ChatService {
     return data as Chat;
   }
 
-  // Arquivar um chat
-  static async archiveChat(chatId: string): Promise<boolean> {
+  // Arquivar ou desarquivar um chat
+  static async archiveChat(chatId: string, archive: boolean = true): Promise<boolean> {
     const { error } = await supabase
       .from('chats')
-      .update({ is_archived: true })
+      .update({ is_archived: archive })
       .eq('id', chatId);
 
     if (error) {
@@ -143,6 +143,22 @@ export class ChatService {
 
     if (error) {
       console.error('Erro ao atualizar título do chat:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  // Deletar um chat e todas as suas mensagens
+  static async deleteChat(chatId: string): Promise<boolean> {
+    // As mensagens serão deletadas automaticamente devido ao CASCADE
+    const { error } = await supabase
+      .from('chats')
+      .delete()
+      .eq('id', chatId);
+
+    if (error) {
+      console.error('Erro ao deletar chat:', error);
       return false;
     }
 
