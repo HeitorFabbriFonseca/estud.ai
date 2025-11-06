@@ -72,24 +72,35 @@ export class UserService {
       }
 
       // Usar função RPC do Supabase para autenticar
+      const trimmedUsername = username.trim();
       const { data, error } = await supabase.rpc('authenticate_user', {
-        p_username: username.trim(),
+        p_username: trimmedUsername,
         p_password: password
       });
 
       if (error) {
-        console.error('Erro ao autenticar usuário:', error);
+        console.error('❌ Erro ao autenticar usuário:', error);
         console.error('Detalhes do erro:', JSON.stringify(error, null, 2));
+        console.error('Username usado:', trimmedUsername);
         return null;
       }
 
-      if (data && data.length > 0) {
+      // Debug: verificar o que foi retornado
+      if (data === null || data === undefined) {
+        console.warn('⚠️ Função retornou null/undefined');
+        return null;
+      }
+
+      if (Array.isArray(data) && data.length > 0) {
         // Retornar usuário sem o password_hash
         const userData = data[0];
         const { password_hash, ...userWithoutPassword } = userData;
+        console.log('✅ Autenticação bem-sucedida:', userWithoutPassword.username);
         return userWithoutPassword as UserInfo;
       }
 
+      // Se chegou aqui, data está vazio (senha incorreta ou usuário não existe)
+      console.warn('⚠️ Autenticação falhou - dados vazios. Username:', trimmedUsername);
       return null;
     } catch (error) {
       console.error('Exceção ao autenticar usuário:', error);
