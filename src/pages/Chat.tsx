@@ -145,11 +145,19 @@ const Chat = () => {
       }
 
       const webhookUrl: string = WEBHOOK_URL;
+      
+      // Configurar timeout de 3 minutos (180 segundos)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 180000);
+      
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: currentInput, chatId: currentChat.id })
+        body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       if (!response.ok) throw new Error('Erro ao conectar ao webhook');
       const data = await response.json();
       
@@ -170,9 +178,14 @@ const Chat = () => {
         ...prev,
         { role: 'assistant', content: reply, timestamp: new Date() }
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro detalhado:", error);
-      const errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
+      
+      // Detectar se foi timeout
+      let errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
+      if (error.name === 'AbortError') {
+        errorMessage = 'O servidor demorou mais de 3 minutos para responder. Por favor, tente novamente.';
+      }
       
       // Salvar mensagem de erro também
       await ChatService.addMessage(currentChat.id, 'assistant', errorMessage);
