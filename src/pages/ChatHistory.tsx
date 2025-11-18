@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { ChatService } from '../services/chatService';
 import type { Chat } from '../types/database';
 import { MessageSquare, Clock, Archive, Trash2, Edit2, Search, X, Save } from 'lucide-react';
 import ConfirmDialog from '../components/ConfirmDialog';
+import TutorialModal from '../components/TutorialModal';
 
 const ChatHistory = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [chats, setChats] = useState<Chat[]>([]);
   const [filteredChats, setFilteredChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,12 +21,26 @@ const ChatHistory = () => {
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editedTitle, setEditedTitle] = useState('');
   const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
       loadChats();
     }
   }, [user, showArchived]);
+
+  useEffect(() => {
+    // Verificar se deve mostrar o tutorial após login
+    const locationState = location.state as { showTutorial?: boolean } | null;
+    const tutorialSeen = localStorage.getItem('tutorialSeen');
+    
+    if (locationState?.showTutorial && !tutorialSeen) {
+      // Pequeno delay para garantir que a página carregou
+      setTimeout(() => {
+        setShowTutorial(true);
+      }, 500);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -350,6 +366,17 @@ const ChatHistory = () => {
         confirmButtonColor="red"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeletingChatId(null)}
+      />
+
+      {/* Tutorial Modal */}
+      <TutorialModal
+        isOpen={showTutorial}
+        onClose={() => {
+          setShowTutorial(false);
+          localStorage.setItem('tutorialSeen', 'true');
+          // Limpar o state da navegação
+          navigate(location.pathname, { replace: true, state: {} });
+        }}
       />
     </div>
   );

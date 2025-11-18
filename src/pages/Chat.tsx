@@ -321,7 +321,7 @@ const Chat = () => {
               <textarea
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Digite sua mensagem..."
+                placeholder="Ex: Tenho uma prova de banco de dados dia 15"
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={1}
                 disabled={isLoading}
