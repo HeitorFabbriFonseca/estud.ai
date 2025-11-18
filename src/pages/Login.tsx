@@ -21,7 +21,7 @@ const Login = () => {
     try {
       const success = await login(username, password);
       if (success) {
-        navigate('/');
+        navigate('/', { state: { showTutorial: true } });
       } else {
         setError('Usuário ou senha incorretos.');
       }
