@@ -125,16 +125,11 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slideUp">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 rounded-full p-2">
-              {currentStepData.icon}
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">{currentStepData.title}</h2>
-              <p className="text-sm text-gray-600">
-                Passo {currentStep + 1} de {steps.length}
-              </p>
-            </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{currentStepData.title}</h2>
+            <p className="text-sm text-gray-600">
+              Passo {currentStep + 1} de {steps.length}
+            </p>
           </div>
           <button
             onClick={handleSkip}
