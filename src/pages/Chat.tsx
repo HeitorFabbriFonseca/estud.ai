@@ -139,8 +139,12 @@ const Chat = () => {
     try {
       const dbMessages = await ChatService.getChatMessages(chatId);
       
+      console.log('Polling - Mensagens no banco:', dbMessages.length, 'Última contagem:', lastMessageCountRef.current);
+      
       // Se encontrou novas mensagens (mais mensagens do que antes)
       if (dbMessages.length > lastMessageCountRef.current) {
+        console.log('Nova mensagem detectada! Atualizando UI...');
+        
         const formattedMessages: Message[] = dbMessages.map((msg) => ({
           role: msg.role,
           content: msg.content,
@@ -148,16 +152,16 @@ const Chat = () => {
         }));
         
         setMessages(formattedMessages);
+        lastMessageCountRef.current = dbMessages.length;
         
         // Verificar se a última mensagem é do assistente (resposta do n8n)
         const lastMessage = dbMessages[dbMessages.length - 1];
         if (lastMessage && lastMessage.role === 'assistant') {
+          console.log('Resposta do assistente encontrada! Parando polling...');
           // Resposta do assistente encontrada - parar polling
           stopPolling();
           setIsLoading(false);
         }
-        
-        lastMessageCountRef.current = dbMessages.length;
       }
     } catch (error) {
       console.error('Erro ao verificar novas mensagens:', error);
@@ -187,19 +191,19 @@ const Chat = () => {
     e.preventDefault();
     if (!input.trim() || isLoading || isReadOnly || !currentChat) return;
 
-    const userMessage: Message = { 
-      role: 'user', 
-      content: input,
-      timestamp: new Date()
-    };
-    
     // Salvar mensagem do usuário no Supabase
     await ChatService.addMessage(currentChat.id, 'user', input);
-    setMessages(prev => {
-      const newMessages = [...prev, userMessage];
-      lastMessageCountRef.current = newMessages.length;
-      return newMessages;
-    });
+    
+    // Recarregar mensagens do banco para ter a contagem correta
+    const dbMessages = await ChatService.getChatMessages(currentChat.id);
+    const formattedMessages: Message[] = dbMessages.map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+      timestamp: new Date(msg.created_at),
+    }));
+    
+    setMessages(formattedMessages);
+    lastMessageCountRef.current = dbMessages.length;
     
     // Calcular próximo sequence_order para a resposta do assistente
     const nextSequence = await ChatService.getNextSequenceOrder(currentChat.id);
