@@ -134,6 +134,22 @@ export class ChatService {
     return (data || []) as Message[];
   }
 
+  // Obter o próximo sequence_order sem inserir mensagem
+  static async getNextSequenceOrder(chatId: string): Promise<number> {
+    const { data: messages } = await supabase
+      .from('messages')
+      .select('sequence_order')
+      .eq('chat_id', chatId)
+      .order('sequence_order', { ascending: false })
+      .limit(1);
+
+    const nextSequence = messages && messages.length > 0 
+      ? (messages[0].sequence_order as number) + 1 
+      : 0;
+
+    return nextSequence;
+  }
+
   // Atualizar o título do chat
   static async updateChatTitle(chatId: string, title: string): Promise<boolean> {
     const { error } = await supabase

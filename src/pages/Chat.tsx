@@ -25,6 +25,8 @@ const Chat = () => {
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pollingIntervalRef = useRef<number | null>(null);
+  const lastMessageCountRef = useRef<number>(0);
 
   const loadChat = async (id: string) => {
     if (!user?.id) return;
@@ -64,6 +66,7 @@ const Chat = () => {
       }
 
       setMessages(formattedMessages);
+      lastMessageCountRef.current = formattedMessages.length;
     } catch (error) {
       console.error('Erro ao carregar chat:', error);
       navigate('/chat');
@@ -114,11 +117,70 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Limpar polling quando o componente desmontar ou o chat mudar
+  useEffect(() => {
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+    };
+  }, [chatId]);
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('pt-BR', { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
+  };
+
+  // Função para verificar novas mensagens no Supabase
+  const checkForNewMessages = async (chatId: string) => {
+    try {
+      const dbMessages = await ChatService.getChatMessages(chatId);
+      
+      // Se encontrou novas mensagens (mais mensagens do que antes)
+      if (dbMessages.length > lastMessageCountRef.current) {
+        const formattedMessages: Message[] = dbMessages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date(msg.created_at),
+        }));
+        
+        setMessages(formattedMessages);
+        
+        // Verificar se a última mensagem é do assistente (resposta do n8n)
+        const lastMessage = dbMessages[dbMessages.length - 1];
+        if (lastMessage && lastMessage.role === 'assistant') {
+          // Resposta do assistente encontrada - parar polling
+          stopPolling();
+          setIsLoading(false);
+        }
+        
+        lastMessageCountRef.current = dbMessages.length;
+      }
+    } catch (error) {
+      console.error('Erro ao verificar novas mensagens:', error);
+    }
+  };
+
+  // Função para iniciar o polling
+  const startPolling = (chatId: string) => {
+    // Limpar polling anterior se existir
+    stopPolling();
+    
+    // Verificar a cada 2 segundos
+    pollingIntervalRef.current = window.setInterval(() => {
+      checkForNewMessages(chatId);
+    }, 2000);
+  };
+
+  // Função para parar o polling
+  const stopPolling = () => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -133,7 +195,14 @@ const Chat = () => {
     
     // Salvar mensagem do usuário no Supabase
     await ChatService.addMessage(currentChat.id, 'user', input);
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => {
+      const newMessages = [...prev, userMessage];
+      lastMessageCountRef.current = newMessages.length;
+      return newMessages;
+    });
+    
+    // Calcular próximo sequence_order para a resposta do assistente
+    const nextSequence = await ChatService.getNextSequenceOrder(currentChat.id);
     
     const currentInput = input;
     setInput('');
@@ -144,52 +213,57 @@ const Chat = () => {
         throw new Error('Webhook URL não configurada');
       }
 
+      // Enviar webhook do n8n (retorna imediatamente, não aguarda resposta)
       const webhookUrl: string = WEBHOOK_URL;
       
-      const response = await fetch(webhookUrl, {
+      // Fire and forget - não aguardamos a resposta
+      // Inclui next_sequence para o n8n saber qual sequence_order usar
+      fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
+        body: JSON.stringify({ 
+          message: currentInput, 
+          chatId: currentChat.id,
+          next_sequence: nextSequence 
+        }),
+      }).catch((error) => {
+        console.error('Erro ao enviar webhook:', error);
+        // Mesmo se houver erro no webhook, vamos continuar verificando o banco
       });
       
-      if (!response.ok) throw new Error('Erro ao conectar ao webhook');
-      const data = await response.json();
+      // Iniciar polling para verificar quando a resposta do n8n for salva no Supabase
+      startPolling(currentChat.id);
       
-      // Processa a resposta no formato da webhook
-      let reply = 'Sem resposta do servidor.';
-      if (Array.isArray(data) && data.length > 0 && data[0].output) {
-        reply = data[0].output;
-      } else if (data && data.output) {
-        reply = data.output;
-      } else if (data.reply) {
-        reply = data.reply;
-      }
+      // Timeout de segurança: parar polling após 5 minutos
+      setTimeout(() => {
+        if (pollingIntervalRef.current) {
+          stopPolling();
+          setIsLoading(false);
+          console.log('Polling interrompido após 5 minutos');
+        }
+      }, 300000); // 5 minutos
       
-      // Salvar resposta do assistente no Supabase
-      await ChatService.addMessage(currentChat.id, 'assistant', reply);
-      
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: reply, timestamp: new Date() }
-      ]);
     } catch (error: any) {
       console.error("Erro detalhado:", error);
+      setIsLoading(false);
       
       let errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
       
       // Salvar mensagem de erro também
       await ChatService.addMessage(currentChat.id, 'assistant', errorMessage);
       
-      setMessages(prev => [
-        ...prev,
-        { 
-          role: 'assistant', 
-          content: errorMessage,
-          timestamp: new Date()
-        }
-      ]);
-    } finally {
-      setIsLoading(false);
+      setMessages(prev => {
+        const newMessages = [
+          ...prev,
+          { 
+            role: 'assistant' as const, 
+            content: errorMessage,
+            timestamp: new Date()
+          }
+        ];
+        lastMessageCountRef.current = newMessages.length;
+        return newMessages;
+      });
     }
   };
 
