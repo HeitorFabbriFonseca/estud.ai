@@ -164,29 +164,5 @@ export class ChatService {
 
     return true;
   }
-
-  // Verificar se há nova mensagem do assistente após um sequence_order específico
-  static async checkForNewAssistantMessage(chatId: string, afterSequenceOrder: number): Promise<Message | null> {
-    const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('chat_id', chatId)
-      .eq('role', 'assistant')
-      .gt('sequence_order', afterSequenceOrder)
-      .order('sequence_order', { ascending: true })
-      .limit(1)
-      .single();
-
-    if (error) {
-      // Se não encontrar mensagem, retorna null (não é erro)
-      if (error.code === 'PGRST116') {
-        return null;
-      }
-      console.error('Erro ao verificar nova mensagem:', error);
-      return null;
-    }
-
-    return data as Message;
-  }
 }
 
