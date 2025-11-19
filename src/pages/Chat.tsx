@@ -131,11 +131,17 @@ const Chat = () => {
       timestamp: new Date()
     };
     
-    // Salvar mensagem do usuário no Supabase
-    await ChatService.addMessage(currentChat.id, 'user', input);
+    // Salvar mensagem do usuário no Supabase e obter seu sequence_order
+    const savedUserMessage = await ChatService.addMessage(currentChat.id, 'user', input);
+    if (!savedUserMessage) {
+      console.error('Erro ao salvar mensagem do usuário');
+      return;
+    }
+    
     setMessages(prev => [...prev, userMessage]);
     
     const currentInput = input;
+    const userMessageSequence = savedUserMessage.sequence_order;
     setInput('');
     setIsLoading(true);
 
@@ -146,48 +152,123 @@ const Chat = () => {
 
       const webhookUrl: string = WEBHOOK_URL;
       
-      // Configurar timeout de 3 minutos (180 segundos)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 180000);
+      const timeoutId = setTimeout(() => controller.abort(), 180000); 
       
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
+        body: JSON.stringify({ 
+          message: currentInput, 
+          chatId: currentChat.id,
+          lastSequenceOrder: userMessageSequence // Enviar para n8n calcular o próximo
+        }),
         signal: controller.signal
       });
       
       clearTimeout(timeoutId);
-      if (!response.ok) throw new Error('Erro ao conectar ao webhook');
-      const data = await response.json();
       
-      // Processa a resposta no formato da webhook
-      let reply = 'Sem resposta do servidor.';
-      if (Array.isArray(data) && data.length > 0 && data[0].output) {
-        reply = data[0].output;
-      } else if (data && data.output) {
-        reply = data.output;
-      } else if (data.reply) {
-        reply = data.reply;
+      if (!response.ok) {
+        throw new Error('Erro ao conectar ao webhook');
       }
       
-      // Salvar resposta do assistente no Supabase
-      await ChatService.addMessage(currentChat.id, 'assistant', reply);
+      // Webhook respondeu com sucesso
+      // O n8n pode ter respondido diretamente ou apenas confirmado o recebimento
+      const responseData = await response.json();
+      console.log('Resposta do webhook:', responseData);
       
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: reply, timestamp: new Date() }
-      ]);
+      // Verificar se a resposta já contém a mensagem do assistente
+      // (caso o n8n tenha processado e respondido diretamente)
+      if (responseData.content && responseData.role === 'assistant') {
+        // Resposta direta do n8n - salvar e exibir
+        await ChatService.addMessage(currentChat.id, 'assistant', responseData.content);
+        setMessages(prev => [
+          ...prev,
+          { 
+            role: 'assistant', 
+            content: responseData.content,
+            timestamp: new Date()
+          }
+        ]);
+        setIsLoading(false);
+        return; // Sucesso!
+      }
+      
+      // Se não houver resposta direta, fazer polling no Supabase
+      // para verificar se há nova mensagem do assistente
+      let attempts = 0;
+      const maxAttempts = 120; // 10 minutos (120 * 5s)
+      const pollInterval = 5000; // 5 segundos
+      
+      while (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+        attempts++;
+        
+        try {
+          const newMessage = await ChatService.checkForNewAssistantMessage(
+            currentChat.id, 
+            userMessageSequence
+          );
+          
+          if (newMessage) {
+            // Mensagem encontrada! Exibir no chat
+            setMessages(prev => [
+              ...prev,
+              { 
+                role: 'assistant', 
+                content: newMessage.content,
+                timestamp: new Date(newMessage.created_at)
+              }
+            ]);
+            setIsLoading(false);
+            return; // Sucesso!
+          }
+        } catch (pollError) {
+          console.error('Erro ao verificar nova mensagem:', pollError);
+          // Continuar tentando
+        }
+      }
+      
+      // Timeout do polling
+      throw new Error('Timeout: A resposta demorou mais que o esperado. Verifique se o processamento foi concluído.');
+      
     } catch (error: any) {
       console.error("Erro detalhado:", error);
       
-      // Detectar se foi timeout
       let errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
+      
       if (error.name === 'AbortError') {
-        errorMessage = 'O servidor demorou mais de 3 minutos para responder. Por favor, tente novamente.';
+        errorMessage = 'O servidor não respondeu a tempo. O processamento pode estar em andamento. Verifique o chat em alguns instantes.';
+      } else if (error.message.includes('Timeout')) {
+        errorMessage = 'O processamento está demorando mais que o esperado. Verifique o chat em alguns instantes - a resposta pode aparecer em breve.';
       }
       
-      // Salvar mensagem de erro também
+      // Verificar uma última vez se a mensagem foi salva
+      try {
+        const lastCheck = await ChatService.checkForNewAssistantMessage(
+          currentChat.id, 
+          userMessageSequence
+        );
+        
+        if (lastCheck) {
+          // Mensagem foi encontrada na última verificação!
+          setMessages(prev => [
+            ...prev,
+            { 
+              role: 'assistant', 
+              content: lastCheck.content,
+              timestamp: new Date(lastCheck.created_at)
+            }
+          ]);
+          setIsLoading(false);
+          return;
+        }
+      } catch (checkError) {
+        console.error('Erro na verificação final:', checkError);
+      }
+      
+      // Se chegou aqui, realmente não há mensagem
+      // Salvar mensagem de erro
       await ChatService.addMessage(currentChat.id, 'assistant', errorMessage);
       
       setMessages(prev => [
