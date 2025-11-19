@@ -146,45 +146,68 @@ const Chat = () => {
 
       const webhookUrl: string = WEBHOOK_URL;
       
-      // Configurar timeout de 3 minutos (180 segundos)
+      // Configurar timeout de 3 minutos (180000 milissegundos)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 180000);
+      const timeoutId = setTimeout(() => {
+        console.log('Timeout atingido após 3 minutos');
+        controller.abort();
+      }, 180000); // 3 minutos = 180000ms
       
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      if (!response.ok) throw new Error('Erro ao conectar ao webhook');
-      const data = await response.json();
-      
-      // Processa a resposta no formato da webhook
-      let reply = 'Sem resposta do servidor.';
-      if (Array.isArray(data) && data.length > 0 && data[0].output) {
-        reply = data[0].output;
-      } else if (data && data.output) {
-        reply = data.output;
-      } else if (data.reply) {
-        reply = data.reply;
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
+          signal: controller.signal,
+          // keepalive ajuda a manter conexões longas em alguns navegadores
+          keepalive: true
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) throw new Error('Erro ao conectar ao webhook');
+        const data = await response.json();
+        
+        // Processa a resposta no formato da webhook
+        let reply = 'Sem resposta do servidor.';
+        if (Array.isArray(data) && data.length > 0 && data[0].output) {
+          reply = data[0].output;
+        } else if (data && data.output) {
+          reply = data.output;
+        } else if (data.reply) {
+          reply = data.reply;
+        }
+        
+        // Salvar resposta do assistente no Supabase
+        await ChatService.addMessage(currentChat.id, 'assistant', reply);
+        
+        setMessages(prev => [
+          ...prev,
+          { role: 'assistant', content: reply, timestamp: new Date() }
+        ]);
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        
+        // Se foi abortado pelo timeout, relançar o erro
+        if (fetchError.name === 'AbortError') {
+          throw fetchError;
+        }
+        
+        // Se foi erro de rede ou outro erro do fetch, relançar
+        throw fetchError;
       }
-      
-      // Salvar resposta do assistente no Supabase
-      await ChatService.addMessage(currentChat.id, 'assistant', reply);
-      
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: reply, timestamp: new Date() }
-      ]);
     } catch (error: any) {
       console.error("Erro detalhado:", error);
       
       // Detectar se foi timeout
       let errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
-      if (error.name === 'AbortError') {
-        errorMessage = 'O servidor demorou mais de 3 minutos para responder. Por favor, tente novamente.';
+      if (error.name === 'AbortError' || error.message?.includes('aborted')) {
+        errorMessage = 'A requisição demorou mais de 3 minutos para responder. O servidor pode estar processando sua solicitação - por favor, aguarde um momento e tente novamente se necessário.';
+      } else if (error.message?.includes('network') || error.message?.includes('NetworkError') || error.message?.includes('Failed to fetch')) {
+        errorMessage = 'Erro de conexão de rede. Verifique sua conexão e tente novamente.';
       }
       
       // Salvar mensagem de erro também
