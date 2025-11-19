@@ -146,73 +146,14 @@ const Chat = () => {
 
       const webhookUrl: string = WEBHOOK_URL;
       
-      // Usar XMLHttpRequest em vez de fetch para ter melhor controle sobre timeout longo
-      // XMLHttpRequest permite timeout de até 2^31-1ms (~24 dias), enquanto navegadores
-      // geralmente limitam fetch a ~90-120 segundos
-      const data = await new Promise<any>((resolve, reject) => {
-        let retryCount = 0;
-        const maxRetries = 2;
-        const requestBody = JSON.stringify({ message: currentInput, chatId: currentChat.id });
-        
-        const makeRequest = () => {
-          const xhr = new XMLHttpRequest();
-          
-          // Configurar timeout de 3 minutos (180000ms)
-          xhr.timeout = 180000;
-          
-          xhr.open('POST', webhookUrl, true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.setRequestHeader('Accept', 'application/json');
-          
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                const responseData = JSON.parse(xhr.responseText);
-                resolve(responseData);
-              } catch (e) {
-                reject(new Error('Erro ao parsear resposta JSON'));
-              }
-            } else if (xhr.status === 504 && retryCount < maxRetries) {
-              // Gateway timeout - tentar novamente após um pequeno delay
-              retryCount++;
-              console.log(`504 Gateway Timeout detectado. Tentativa ${retryCount}/${maxRetries}...`);
-              setTimeout(() => {
-                makeRequest(); // Fazer nova tentativa
-              }, 2000); // Aguardar 2 segundos antes de retry
-            } else {
-              reject(new Error(`Erro HTTP ${xhr.status}: ${xhr.statusText}`));
-            }
-          };
-          
-          xhr.onerror = () => {
-            if (retryCount < maxRetries) {
-              retryCount++;
-              console.log(`Erro de rede. Tentativa ${retryCount}/${maxRetries}...`);
-              setTimeout(() => {
-                makeRequest(); // Fazer nova tentativa
-              }, 2000);
-            } else {
-              reject(new Error('Erro de conexão de rede'));
-            }
-          };
-          
-          xhr.ontimeout = () => {
-            if (retryCount < maxRetries) {
-              retryCount++;
-              console.log(`Timeout detectado. Tentativa ${retryCount}/${maxRetries}...`);
-              setTimeout(() => {
-                makeRequest(); // Fazer nova tentativa
-              }, 2000);
-            } else {
-              reject(new Error('Timeout após 3 minutos - servidor não respondeu após múltiplas tentativas'));
-            }
-          };
-          
-          xhr.send(requestBody);
-        };
-        
-        makeRequest();
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: currentInput, chatId: currentChat.id }),
       });
+      
+      if (!response.ok) throw new Error('Erro ao conectar ao webhook');
+      const data = await response.json();
       
       // Processa a resposta no formato da webhook
       let reply = 'Sem resposta do servidor.';
@@ -234,20 +175,7 @@ const Chat = () => {
     } catch (error: any) {
       console.error("Erro detalhado:", error);
       
-      // Detectar tipo de erro para mensagem apropriada
       let errorMessage = 'Desculpe, ocorreu um erro ao processar sua mensagem. Verifique se o webhook do n8n está configurado corretamente.';
-      
-      const errorMsg = error.message || error.toString();
-      
-      if (errorMsg.includes('Timeout') || errorMsg.includes('timeout')) {
-        errorMessage = 'A requisição demorou mais de 3 minutos para responder. O servidor pode estar processando sua solicitação - por favor, aguarde um momento e tente novamente se necessário.';
-      } else if (errorMsg.includes('504') || errorMsg.includes('Gateway Timeout')) {
-        errorMessage = 'O servidor demorou mais de 1 minuto para responder (504 Gateway Timeout). Tente novamente - o n8n pode precisar de mais tempo para processar.';
-      } else if (errorMsg.includes('network') || errorMsg.includes('NetworkError') || errorMsg.includes('Erro de conexão')) {
-        errorMessage = 'Erro de conexão de rede. Verifique sua conexão e tente novamente.';
-      } else if (errorMsg.includes('HTTP')) {
-        errorMessage = `Erro do servidor: ${errorMsg}. Tente novamente em alguns instantes.`;
-      }
       
       // Salvar mensagem de erro também
       await ChatService.addMessage(currentChat.id, 'assistant', errorMessage);
