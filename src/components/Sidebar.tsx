@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { MessageSquare, Settings, User, LogOut, History } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { Avatar } from './Avatar';
 
 const Sidebar = () => {
   const { user, logout } = useAuth();
@@ -38,10 +39,11 @@ const Sidebar = () => {
       {user && (
         <div className="border-t p-4">
           <div className="flex items-center space-x-3 mb-4">
-            <img
+            <Avatar
               src={user.avatar}
               alt={user.name}
-              className="w-10 h-10 rounded-full border-2 border-gray-200"
+              size="md"
+              showStatus={true}
             />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>

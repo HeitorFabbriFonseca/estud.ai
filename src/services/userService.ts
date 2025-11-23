@@ -152,5 +152,71 @@ export class UserService {
       return { success: false, error: 'Erro ao alterar senha' };
     }
   }
+
+  // Upload de avatar
+  static async uploadAvatar(userId: string, file: File): Promise<{ success: boolean; url?: string; error?: string }> {
+    try {
+      // Validar tipo de arquivo
+      if (!file.type.startsWith('image/')) {
+        return { success: false, error: 'O arquivo deve ser uma imagem' };
+      }
+
+      // Validar tamanho (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        return { success: false, error: 'A imagem deve ter no máximo 5MB' };
+      }
+
+      // Criar nome único para o arquivo
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      // Upload para Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (uploadError) {
+        console.error('Erro ao fazer upload:', uploadError);
+        
+        // Verificar se o erro é porque o bucket não existe
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('The resource was not found')) {
+          return { 
+            success: false, 
+            error: 'Bucket de avatares não configurado. Por favor, crie um bucket chamado "avatars" no Supabase Storage.' 
+          };
+        }
+        
+        return { success: false, error: uploadError.message || 'Erro ao fazer upload da imagem' };
+      }
+
+      // Obter URL pública
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      if (!urlData?.publicUrl) {
+        return { success: false, error: 'Erro ao obter URL da imagem' };
+      }
+
+      // Atualizar avatar no banco de dados
+      const updateSuccess = await this.updateUser(userId, { avatar: urlData.publicUrl });
+
+      if (!updateSuccess) {
+        return { success: false, error: 'Erro ao atualizar avatar no banco de dados' };
+      }
+
+      return { success: true, url: urlData.publicUrl };
+    } catch (error: any) {
+      console.error('Erro ao fazer upload do avatar:', error);
+      return { 
+        success: false, 
+        error: error?.message || 'Erro ao fazer upload do avatar. Verifique se o bucket "avatars" está configurado no Supabase Storage.' 
+      };
+    }
+  }
 }
 
