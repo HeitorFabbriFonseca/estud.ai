@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { UserService } from '../services/userService';
-import { User, Settings, LogOut, Edit3, Save, X, Lock, Eye, EyeOff } from 'lucide-react';
+import { Avatar } from '../components/Avatar';
+import { User, Settings, LogOut, Edit3, Save, X, Lock, Eye, EyeOff, Camera } from 'lucide-react';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { showToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(user?.name || '');
   const [editedEmail, setEditedEmail] = useState(user?.email || '');
   const [isSaving, setIsSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   
   // Estados para alterar senha
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -33,7 +36,7 @@ const Profile = () => {
   }, [user]);
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user || !updateUser) return;
 
     // Validações
     if (!editedName.trim()) {
@@ -66,9 +69,7 @@ const Profile = () => {
         setIsEditing(false);
         // Atualizar o contexto de autenticação
         const updatedUser = await UserService.getUserById(user.id);
-        if (updatedUser) {
-          // O AuthContext será atualizado automaticamente no próximo login
-          // Por enquanto, vamos atualizar o localStorage
+        if (updatedUser && updateUser) {
           const userData = {
             id: updatedUser.id,
             username: updatedUser.username,
@@ -76,9 +77,7 @@ const Profile = () => {
             email: updatedUser.email,
             avatar: updatedUser.avatar || undefined,
           };
-          localStorage.setItem('user', JSON.stringify(userData));
-          // Recarregar a página para atualizar o contexto
-          window.location.reload();
+          updateUser(userData);
         }
       } else {
         showToast('Erro ao atualizar informações', 'error');
@@ -95,6 +94,41 @@ const Profile = () => {
     setEditedName(user?.name || '');
     setEditedEmail(user?.email || '');
     setIsEditing(false);
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !updateUser) return;
+
+    setIsUploadingAvatar(true);
+
+    try {
+      const result = await UserService.uploadAvatar(user.id, file);
+
+      if (result.success && result.url) {
+        showToast('Avatar atualizado com sucesso!', 'success');
+        const updatedUserData = {
+          ...user,
+          avatar: result.url,
+        };
+        updateUser(updatedUserData);
+      } else {
+        showToast(result.error || 'Erro ao fazer upload do avatar', 'error');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upload:', error);
+      showToast('Erro ao fazer upload do avatar', 'error');
+    } finally {
+      setIsUploadingAvatar(false);
+      // Limpar o input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   const handleChangePassword = async () => {
@@ -211,20 +245,48 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 overflow-y-auto">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center space-x-6 mb-8">
-            <div className="relative">
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-24 h-24 rounded-full border-4 border-gray-200"
+            <div className="relative group">
+              <div className="relative">
+                <Avatar
+                  src={user.avatar}
+                  alt={user.name}
+                  size="lg"
+                  showStatus={true}
+                />
+                <button
+                  onClick={handleAvatarClick}
+                  disabled={isUploadingAvatar}
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-50 rounded-full transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+                  title="Clique para alterar o avatar"
+                >
+                  {isUploadingAvatar ? (
+                    <span className="text-white animate-spin text-2xl">⏳</span>
+                  ) : (
+                    <Camera className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
+                </button>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
               />
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white"></div>
             </div>
             <div>
               <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
               <p className="text-gray-600">@{user.username}</p>
+              <button
+                onClick={handleAvatarClick}
+                disabled={isUploadingAvatar}
+                className="mt-2 text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
+              >
+                {isUploadingAvatar ? 'Enviando...' : 'Alterar avatar'}
+              </button>
             </div>
           </div>
 
@@ -432,28 +494,6 @@ const Profile = () => {
                     </div>
                   )}
                 </div>
-
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Notificações por Email</h4>
-                    <p className="text-sm text-gray-600">Receber notificações sobre novas funcionalidades</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
-                  <div>
-                    <h4 className="font-medium text-gray-900">Modo Escuro</h4>
-                    <p className="text-sm text-gray-600">Ativar tema escuro na interface</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
               </div>
             </div>
 
@@ -484,4 +524,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
