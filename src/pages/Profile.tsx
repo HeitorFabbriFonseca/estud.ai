@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { UserService } from '../services/userService';
 import { Avatar } from '../components/Avatar';
-import { User, Settings, LogOut, Edit3, Save, X, Lock, Eye, EyeOff, Upload, Camera } from 'lucide-react';
+import { User, Settings, LogOut, Edit3, Save, X, Lock, Eye, EyeOff, Camera } from 'lucide-react';
 
 const Profile = () => {
   const { user, logout, updateUser } = useAuth();
