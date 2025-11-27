@@ -18,12 +18,12 @@ const Sidebar = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `group flex items-center rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
       isActive
-        ? 'bg-white text-slate-900 shadow-lg shadow-cyan-500/20'
-        : 'text-slate-200 hover:bg-white/5 hover:text-white'
+        ? 'bg-white/90 text-slate-900 shadow-md shadow-slate-900/10'
+        : 'text-slate-200 hover:bg-white/10 hover:text-white'
     }`;
 
   return (
-    <aside className="flex w-full flex-col rounded-[32px] border border-white/10 bg-white/5 p-6 text-white shadow-2xl shadow-black/30 backdrop-blur-2xl lg:w-72 lg:shrink-0">
+    <aside className="flex w-full flex-col rounded-[28px] border border-white/5 bg-slate-900/70 p-6 text-white shadow-xl shadow-black/30 backdrop-blur-lg lg:w-72 lg:shrink-0">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-white/60">EstudAI</p>
@@ -34,20 +34,20 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-4">
+      <div className="mt-6 rounded-3xl border border-white/5 bg-white/[0.04] p-4">
         <p className="text-sm text-white/70">Bom estudo,</p>
         <p className="text-lg font-semibold text-white">{preferredName}</p>
         <p className="mt-2 text-xs text-white/60">
           Continue consistente para alcançar sua meta semanal.
         </p>
         <div className="mt-4 space-y-2">
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-widest text-white/60">
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.4em] text-white/60">
             <span>Foco semanal</span>
             <span>{weeklyProgress}%</span>
           </div>
           <div className="h-2 rounded-full bg-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-cyan-300 via-sky-400 to-indigo-400"
+              className="h-full rounded-full bg-gradient-to-r from-slate-200 via-blue-200 to-slate-100"
               style={{ width: `${weeklyProgress}%` }}
             />
           </div>
@@ -64,7 +64,7 @@ const Sidebar = () => {
       </nav>
 
       {user && (
-        <div className="mt-auto rounded-3xl border border-white/10 bg-white/5 p-4">
+        <div className="mt-auto rounded-3xl border border-white/5 bg-white/[0.04] p-4">
           <div className="flex items-center gap-3">
             <Avatar src={user.avatar} alt={user.name} size="md" showStatus statusColor="bg-emerald-400" />
             <div className="flex-1 truncate">
@@ -74,7 +74,7 @@ const Sidebar = () => {
           </div>
           <button
             onClick={logout}
-            className="mt-4 flex w-full items-center justify-center rounded-2xl bg-white/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:bg-red-500/20 hover:text-white"
+            className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/30 hover:text-white"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Sair

@@ -30,8 +30,8 @@ const ConfirmDialog = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4">
-      <div className="w-full max-w-lg overflow-hidden rounded-[32px] border border-white/15 bg-slate-950/80 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md px-4">
+      <div className="w-full max-w-lg overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/20">

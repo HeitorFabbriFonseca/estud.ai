@@ -13,11 +13,11 @@ function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+        <div className="relative min-h-screen overflow-hidden bg-[#070d18] text-slate-100">
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-20 -top-16 h-80 w-80 rounded-full bg-cyan-500/30 blur-[140px]" />
-            <div className="absolute right-[-10%] top-[-15%] h-[480px] w-[480px] rounded-full bg-indigo-600/30 blur-[220px]" />
-            <div className="absolute bottom-[-20%] left-[35%] h-[520px] w-[520px] rounded-full bg-amber-400/15 blur-[260px]" />
+            <div className="absolute -left-24 -top-20 h-72 w-72 rounded-full bg-sky-500/20 blur-[150px]" />
+            <div className="absolute right-[-5%] top-[-10%] h-[360px] w-[360px] rounded-full bg-indigo-700/15 blur-[200px]" />
+            <div className="absolute bottom-[-15%] left-[35%] h-[440px] w-[440px] rounded-full bg-amber-200/10 blur-[220px]" />
           </div>
           <Router>
             <Routes>

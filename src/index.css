@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 2 6 23;
-    --foreground: 241 245 249;
-    --card: 15 23 42;
+    --background: 7 12 24;
+    --foreground: 226 232 240;
+    --card: 16 24 39;
     --card-foreground: 241 245 249;
-    --popover: 15 23 42;
-    --popover-foreground: 241 245 249;
-    --primary: 56 189 248;
+    --popover: 13 21 34;
+    --popover-foreground: 226 232 240;
+    --primary: 107 148 213;
     --primary-foreground: 15 23 42;
-    --secondary: 30 41 59;
-    --secondary-foreground: 226 232 240;
-    --muted: 51 65 85;
+    --secondary: 26 36 52;
+    --secondary-foreground: 209 213 219;
+    --muted: 45 56 74;
     --muted-foreground: 148 163 184;
-    --accent: 59 130 246;
+    --accent: 94 157 206;
     --accent-foreground: 15 23 42;
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-    --border: 255 255 255;
-    --input: 30 41 59;
-    --ring: 56 189 248;
+    --destructive: 229 112 112;
+    --destructive-foreground: 34 38 49;
+    --border: 148 163 184;
+    --input: 28 37 53;
+    --ring: 147 197 253;
     --radius: 0.85rem;
   }
 
   .dark {
-    --background: 2 6 23;
-    --foreground: 241 245 249;
-    --card: 2 6 23;
+    --background: 5 10 20;
+    --foreground: 226 232 240;
+    --card: 10 18 30;
     --card-foreground: 241 245 249;
-    --popover: 15 23 42;
-    --popover-foreground: 241 245 249;
-    --primary: 59 130 246;
+    --popover: 16 24 39;
+    --popover-foreground: 226 232 240;
+    --primary: 107 148 213;
     --primary-foreground: 15 23 42;
-    --secondary: 15 23 42;
-    --secondary-foreground: 226 232 240;
-    --muted: 71 85 105;
+    --secondary: 21 30 44;
+    --secondary-foreground: 209 213 219;
+    --muted: 55 65 81;
     --muted-foreground: 148 163 184;
-    --accent: 6 182 212;
-    --accent-foreground: 2 6 23;
-    --destructive: 248 113 113;
+    --accent: 120 167 214;
+    --accent-foreground: 10 18 30;
+    --destructive: 229 112 112;
     --destructive-foreground: 15 23 42;
     --border: 51 65 85;
-    --input: 15 23 42;
-    --ring: 94 234 212;
+    --input: 18 27 42;
+    --ring: 147 197 253;
   }
 
   * {
@@ -65,11 +65,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #020617;
+  background-color: #080f1c;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(76, 29, 149, 0.35), transparent 45%),
-    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.28), transparent 40%),
-    linear-gradient(135deg, #020617 0%, #0f172a 60%, #111827 100%);
+    radial-gradient(circle at 15% 20%, rgba(94, 157, 206, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 15%, rgba(147, 197, 253, 0.12), transparent 40%),
+    linear-gradient(130deg, #080f1c 0%, #0f172a 55%, #101827 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
@@ -80,13 +80,13 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(circle at 15% 80%, rgba(234, 179, 8, 0.15), transparent 35%),
-    radial-gradient(circle at 85% 70%, rgba(59, 130, 246, 0.2), transparent 40%),
-    linear-gradient(120deg, rgba(147, 51, 234, 0.15), rgba(14, 165, 233, 0.15));
-  opacity: 0.9;
+    radial-gradient(circle at 20% 75%, rgba(236, 201, 75, 0.08), transparent 35%),
+    radial-gradient(circle at 85% 65%, rgba(140, 183, 234, 0.18), transparent 40%),
+    linear-gradient(120deg, rgba(67, 56, 202, 0.08), rgba(59, 130, 246, 0.12));
+  opacity: 0.6;
   z-index: -2;
   pointer-events: none;
-  filter: blur(35px);
+  filter: blur(32px);
 }
 
 #root {
@@ -127,19 +127,19 @@ code {
 
 @layer components {
   .glass-panel {
-    @apply rounded-[28px] border border-white/10 bg-white/10 p-6 text-slate-100 shadow-2xl backdrop-blur-2xl;
+    @apply rounded-[28px] border border-white/5 bg-white/[0.04] p-6 text-slate-100 shadow-xl backdrop-blur-xl;
   }
 
   .frosted-card {
-    @apply rounded-3xl border border-white/5 bg-slate-900/40 p-6 text-slate-100 shadow-xl backdrop-blur-xl;
+    @apply rounded-3xl border border-white/5 bg-slate-900/50 p-6 text-slate-100 shadow-lg backdrop-blur-lg;
   }
 
   .chip {
-    @apply inline-flex items-center rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-200;
+    @apply inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[11px] font-semibold tracking-wide text-slate-200;
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-cyan-200 via-sky-200 to-indigo-200 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-200 via-slate-100 to-blue-300 bg-clip-text text-transparent;
   }
 }
 

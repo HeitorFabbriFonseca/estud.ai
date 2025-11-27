@@ -191,7 +191,7 @@ const ChatHistory = () => {
 
   return (
     <div className="w-full space-y-6">
-      <section className="rounded-[36px] border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-slate-900/40 p-8 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
+      <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-8 text-white shadow-xl shadow-black/30 backdrop-blur-lg">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-white/60">
@@ -211,17 +211,17 @@ const ChatHistory = () => {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
             <p className="text-xs uppercase tracking-[0.4em] text-white/60">Ativas</p>
             <p className="mt-2 text-3xl font-semibold">{activeCount}</p>
             <p className="text-sm text-white/60">conversas acompanhando sua evolução</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
             <p className="text-xs uppercase tracking-[0.4em] text-white/60">Arquivadas</p>
             <p className="mt-2 text-3xl font-semibold">{archivedCount}</p>
             <p className="text-sm text-white/60">conteúdos guardados para consulta</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
             <p className="text-xs uppercase tracking-[0.4em] text-white/60">Última atualização</p>
             <p className="mt-2 text-3xl font-semibold">{lastUpdatedChatDate}</p>
             <p className="text-sm text-white/60">registro mais recente</p>
@@ -251,7 +251,7 @@ const ChatHistory = () => {
         </div>
       </section>
 
-      <section className="rounded-[30px] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/30 backdrop-blur-2xl">
+      <section className="rounded-[28px] border border-white/5 bg-white/[0.04] p-5 shadow-xl shadow-black/30 backdrop-blur-lg">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
@@ -278,7 +278,7 @@ const ChatHistory = () => {
         </div>
       </section>
 
-      <section className="rounded-[36px] border border-white/10 bg-slate-950/60 p-6 shadow-2xl shadow-black/40 backdrop-blur-2xl">
+      <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-6 shadow-xl shadow-black/30 backdrop-blur-lg">
         {filteredChats.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
             <MessageSquare className="h-12 w-12 text-white/30" />
@@ -308,11 +308,11 @@ const ChatHistory = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col gap-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 200px)' }}>
+          <div className="flex flex-col gap-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 220px)' }}>
             {filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="group cursor-pointer overflow-hidden rounded-3xl border border-white/5 bg-slate-900/40 p-5 transition hover:-translate-y-0.5 hover:border-cyan-400/40"
+                className="group cursor-pointer overflow-hidden rounded-3xl border border-white/5 bg-slate-900/50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200/40"
                 onClick={() => handleChatClick(chat.id)}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -360,7 +360,7 @@ const ChatHistory = () => {
                         {chat.is_archived && <span className="chip border-white/20 text-white/70">Arquivada</span>}
                       </div>
                     )}
-                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-white/60">
+                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-white/65">
                       <span className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
                         {formatDate(chat.updated_at)}
@@ -370,24 +370,24 @@ const ChatHistory = () => {
                   </div>
 
                   {editingChatId !== chat.id && (
-                    <div className="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
+                    <div className="flex items-center gap-2 text-white/80 transition md:opacity-0 md:group-hover:opacity-100">
                       <button
                         onClick={(e) => handleEditTitle(chat, e)}
-                        className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:border-cyan-400/40 hover:text-white"
+                        className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"
                         title="Editar título"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleArchiveChat(chat, e)}
-                        className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:border-cyan-400/40 hover:text-white"
+                        className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"
                         title={chat.is_archived ? 'Desarquivar' : 'Arquivar'}
                       >
                         <Archive className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleDeleteClick(chat, e)}
-                        className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-2 text-rose-200 transition hover:bg-rose-500/20"
+                        className="rounded-2xl border border-rose-300/40 bg-rose-500/15 p-2 text-rose-100 transition hover:bg-rose-500/25"
                         title="Deletar conversa"
                       >
                         <Trash2 className="h-4 w-4" />

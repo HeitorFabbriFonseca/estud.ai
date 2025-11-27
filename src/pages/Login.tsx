@@ -33,13 +33,13 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-slate-950 px-4 py-10 text-white">
+    <div className="relative flex min-h-screen items-center justify-center bg-[#070d18] px-4 py-10 text-white">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-16 top-10 h-64 w-64 rounded-full bg-cyan-500/30 blur-[140px]" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500/30 blur-[160px]" />
+        <div className="absolute -left-16 top-10 h-64 w-64 rounded-full bg-sky-500/15 blur-[140px]" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500/20 blur-[160px]" />
       </div>
       <div className="relative z-10 w-full max-w-md space-y-8">
-        <div className="rounded-[32px] border border-white/10 bg-slate-950/80 p-8 shadow-2xl shadow-black/40 backdrop-blur-2xl">
+        <div className="rounded-[28px] border border-white/5 bg-slate-950/60 p-8 shadow-xl shadow-black/30 backdrop-blur-xl">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 via-sky-500 to-indigo-500 shadow-lg shadow-cyan-500/30">
               <LogIn className="h-8 w-8 text-white" />
@@ -99,7 +99,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-white shadow-lg shadow-cyan-500/30 transition hover:from-cyan-400 hover:to-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-2xl border border-white/10 bg-white py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>

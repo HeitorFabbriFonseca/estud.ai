@@ -200,8 +200,8 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="flex h-full w-full flex-col rounded-[36px] border border-white/10 bg-slate-950/70 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
-      <div className="border-b border-white/10 p-6">
+    <div className="flex h-full w-full flex-col rounded-[32px] border border-white/5 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
+      <div className="border-b border-white/5 p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Perfil do Usuário</h1>
           <div className="flex items-center space-x-2">
@@ -497,7 +497,7 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-rose-400/30 bg-rose-500/10 p-6">
+            <div className="rounded-3xl border border-rose-200/40 bg-rose-500/10 p-6">
               <h3 className="mb-4 flex items-center text-lg font-medium text-white">
                 <LogOut className="mr-2 h-5 w-5" />
                 Zona de Perigo

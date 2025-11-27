@@ -317,9 +317,9 @@ const Chat = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-[36px] border border-white/10 bg-slate-950/70 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
+      <div className="rounded-[32px] border border-white/5 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
         <div className="flex h-[78vh] flex-col">
-          <div className="rounded-t-[36px] border-b border-white/10 bg-white/5 px-6 py-6">
+          <div className="rounded-t-[32px] border-b border-white/5 bg-white/[0.04] px-6 py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.4em] text-white/60">Assistente de estudos</p>
@@ -350,7 +350,7 @@ const Chat = () => {
 
           <div className="flex-1 space-y-4 overflow-y-auto px-6 py-6">
             {!hasUserMessages && (
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-3xl border border-white/5 bg-white/[0.04] p-4">
                 <p className="text-sm font-medium text-white">Sugestões rápidas</p>
                 <p className="text-sm text-white/70">Use um atalho para começar mais rápido.</p>
                 <div className="mt-4 flex flex-wrap gap-3">
@@ -395,10 +395,10 @@ const Chat = () => {
 
                       <div className="space-y-2">
                         <div
-                          className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-black/30 ${
+                          className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-black/20 ${
                             isAssistant
-                              ? 'border border-white/10 bg-white/10 text-white'
-                              : 'bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 text-white'
+                              ? 'border border-white/5 bg-white/[0.05] text-white'
+                              : 'border border-white/10 bg-white text-slate-900'
                           }`}
                         >
                           {isAssistant ? (
@@ -423,11 +423,11 @@ const Chat = () => {
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="flex max-w-[80%] items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-cyan-500/20 text-cyan-100">
+                <div className="flex max-w-[80%] items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-slate-800/60 text-white/80">
                       <Bot className="h-5 w-5" />
                     </div>
-                    <div className="rounded-3xl border border-white/10 bg-white/10 px-5 py-3 text-sm text-white/70">
+                    <div className="rounded-3xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm text-white/70">
                       <div className="flex items-center gap-2">
                         <span className="flex gap-1">
                           <span className="h-2 w-2 animate-bounce rounded-full bg-white/60" />
@@ -451,10 +451,10 @@ const Chat = () => {
           </div>
 
           {!isReadOnly ? (
-            <div className="rounded-b-[36px] border-t border-white/10 bg-slate-950/50 px-6 py-5">
+            <div className="rounded-b-[32px] border-t border-white/5 bg-slate-950/40 px-6 py-5">
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-end">
-                  <div className="flex-1 rounded-3xl border border-white/10 bg-white/5 px-5 py-3 transition focus-within:border-cyan-400/60">
+                  <div className="flex-1 rounded-3xl border border-white/5 bg-white/[0.04] px-5 py-3 transition focus-within:border-blue-200/60">
                     <textarea
                       ref={textareaRef}
                       value={input}
@@ -474,7 +474,7 @@ const Chat = () => {
                   <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 text-sm font-semibold uppercase tracking-[0.35em] text-white transition hover:from-cyan-400 hover:to-indigo-400 disabled:cursor-not-allowed disabled:opacity-50 md:w-16"
+                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-slate-200/90 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 md:w-20"
                   >
                     <Send className="h-5 w-5" />
                   </button>
@@ -485,7 +485,7 @@ const Chat = () => {
               </p>
             </div>
           ) : (
-            <div className="rounded-b-[36px] border-t border-white/10 bg-white/5 px-6 py-5">
+            <div className="rounded-b-[32px] border-t border-white/5 bg-white/[0.04] px-6 py-5">
               <div className="flex items-center justify-center gap-2 text-sm text-white/70">
                 <Lock className="h-4 w-4" />
                 <span>Esta conversa está arquivada e permanece disponível apenas para leitura.</span>

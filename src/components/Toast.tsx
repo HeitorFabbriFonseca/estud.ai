@@ -16,23 +16,19 @@ interface ToastProps {
 
 const variantStyles = {
   success: {
-    container: 'border-emerald-400/40 from-emerald-500/20 via-emerald-400/10 to-emerald-500/5 text-emerald-50',
-    accent: 'bg-emerald-400/70',
+    accent: 'bg-emerald-300/70',
     icon: <CheckCircle className="h-5 w-5 text-emerald-200" />,
   },
   error: {
-    container: 'border-rose-400/40 from-rose-500/25 via-rose-400/10 to-rose-500/5 text-rose-100',
-    accent: 'bg-rose-400/70',
+    accent: 'bg-rose-300/70',
     icon: <XCircle className="h-5 w-5 text-rose-200" />,
   },
   warning: {
-    container: 'border-amber-400/40 from-amber-400/25 via-amber-300/10 to-amber-400/5 text-amber-50',
     accent: 'bg-amber-300/70',
     icon: <AlertCircle className="h-5 w-5 text-amber-100" />,
   },
   info: {
-    container: 'border-sky-400/40 from-sky-500/20 via-sky-400/10 to-sky-500/5 text-sky-50',
-    accent: 'bg-sky-400/70',
+    accent: 'bg-sky-300/70',
     icon: <AlertCircle className="h-5 w-5 text-sky-100" />,
   },
 };
@@ -50,7 +46,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
 
   return (
     <div
-      className={`relative flex min-w-[320px] max-w-md animate-in slide-in-from-top-5 items-start gap-3 overflow-hidden rounded-2xl border bg-gradient-to-r px-5 py-4 shadow-2xl shadow-black/40 backdrop-blur-2xl ${variant.container}`}
+      className="relative flex min-w-[320px] max-w-md animate-in slide-in-from-top-5 items-start gap-3 overflow-hidden rounded-2xl border border-white/5 bg-slate-950/75 px-5 py-4 text-slate-100 shadow-xl shadow-black/30 backdrop-blur-xl"
       role="alert"
     >
       <span className={`absolute inset-y-0 left-0 w-1 ${variant.accent}`} />
