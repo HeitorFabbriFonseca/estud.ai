@@ -13,6 +13,7 @@ const ChatHistory = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const [allChats, setAllChats] = useState<Chat[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [filteredChats, setFilteredChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,9 +59,11 @@ const ChatHistory = () => {
     
     setLoading(true);
     try {
-      const userChats = await ChatService.getUserChats(user.id, showArchived);
-      setChats(userChats);
-      setFilteredChats(userChats);
+      const userChats = await ChatService.getUserChats(user.id, true);
+      setAllChats(userChats);
+      const visibleChats = userChats.filter((chat) => (showArchived ? chat.is_archived : !chat.is_archived));
+      setChats(visibleChats);
+      setFilteredChats(visibleChats);
     } catch (error) {
       console.error('Erro ao carregar conversas:', error);
       showToast('Erro ao carregar conversas', 'error');
@@ -171,181 +174,223 @@ const ChatHistory = () => {
     }
   };
 
+  const activeCount = allChats.filter((chat) => !chat.is_archived).length;
+  const archivedCount = Math.max(allChats.length - activeCount, 0);
+  const lastUpdatedChatDate = allChats[0]?.updated_at ? formatDate(allChats[0].updated_at) : 'Sem histórico';
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-gray-500">Carregando conversas...</div>
+      <div className="flex h-full items-center justify-center">
+        <div className="frosted-card flex flex-col items-center gap-4">
+          <MessageSquare className="h-8 w-8 text-cyan-200" />
+          <p className="text-white/80">Carregando conversas...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg border">
-      {/* Header */}
-      <div className="border-b bg-gray-50 rounded-t-lg">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-3">
-            <MessageSquare className="w-6 h-6 text-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-900">
-              {showArchived ? 'Conversas Arquivadas' : 'Conversas'}
-            </h2>
+    <div className="w-full space-y-6">
+      <section className="rounded-[36px] border border-white/10 bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-slate-900/40 p-8 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+              {showArchived ? 'Histórico arquivado' : 'Painel de conversas'}
+            </p>
+            <h2 className="text-3xl font-semibold">Mantenha seus estudos organizados</h2>
+            <p className="mt-2 text-white/70">Busque, edite títulos e retome discussões rapidamente.</p>
           </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setShowArchived(!showArchived)}
-              className="flex items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <Archive className="w-4 h-4 mr-2" />
-              {showArchived ? 'Ver Ativas' : 'Ver Arquivadas'}
-            </button>
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleNewChat}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="rounded-3xl bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:bg-slate-100"
             >
-              Nova Conversa
+              Nova conversa
             </button>
           </div>
         </div>
-        
-        {/* Busca */}
-        <div className="px-4 pb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Ativas</p>
+            <p className="mt-2 text-3xl font-semibold">{activeCount}</p>
+            <p className="text-sm text-white/60">conversas acompanhando sua evolução</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Arquivadas</p>
+            <p className="mt-2 text-3xl font-semibold">{archivedCount}</p>
+            <p className="text-sm text-white/60">conteúdos guardados para consulta</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Última atualização</p>
+            <p className="mt-2 text-3xl font-semibold">{lastUpdatedChatDate}</p>
+            <p className="text-sm text-white/60">registro mais recente</p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <span className="text-sm text-white/70">Filtro rápido</span>
+          <div className="flex rounded-full border border-white/20 p-1">
+            <button
+              onClick={() => setShowArchived(false)}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+                !showArchived ? 'bg-white text-slate-900' : 'text-white/70'
+              }`}
+            >
+              Ativas
+            </button>
+            <button
+              onClick={() => setShowArchived(true)}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+                showArchived ? 'bg-white text-slate-900' : 'text-white/70'
+              }`}
+            >
+              Arquivadas
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-[30px] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/30 backdrop-blur-2xl">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative w-full lg:max-w-sm">
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
             <input
               type="text"
               placeholder="Buscar conversas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900/40 py-3 pl-12 pr-12 text-sm text-white placeholder:text-white/40 focus:border-cyan-400/60 focus:outline-none"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
+                aria-label="Limpar busca"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
             )}
           </div>
+          <p className="text-xs uppercase tracking-[0.35em] text-white/50">
+            {filteredChats.length} resultado{filteredChats.length === 1 ? '' : 's'}
+          </p>
         </div>
-      </div>
+      </section>
 
-      {/* Lista de Conversas */}
-      <div className="overflow-y-auto" style={{ maxHeight: 'calc(80vh - 120px)' }}>
+      <section className="rounded-[36px] border border-white/10 bg-slate-950/60 p-6 shadow-2xl shadow-black/40 backdrop-blur-2xl">
         {filteredChats.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-gray-500">
-            <MessageSquare className="w-16 h-16 mb-4 text-gray-300" />
-            <p className="text-lg font-medium mb-2">
-              {searchQuery 
-                ? 'Nenhuma conversa encontrada'
-                : showArchived 
-                ? 'Nenhuma conversa arquivada' 
-                : 'Nenhuma conversa ainda'}
-            </p>
-            <p className="text-sm text-center">
-              {searchQuery
-                ? 'Tente buscar com outros termos.'
-                : showArchived 
-                ? 'Você ainda não arquivou nenhuma conversa.'
-                : 'Comece uma nova conversa para começar a estudar!'
-              }
-            </p>
+          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+            <MessageSquare className="h-12 w-12 text-white/30" />
+            <div>
+              <p className="text-lg font-semibold text-white">
+                {searchQuery
+                  ? 'Nenhuma conversa encontrada'
+                  : showArchived
+                  ? 'Nenhuma conversa arquivada'
+                  : 'Ainda não há conversas'}
+              </p>
+              <p className="mt-1 text-sm text-white/60">
+                {searchQuery
+                  ? 'Tente outros termos ou revise seu histórico.'
+                  : showArchived
+                  ? 'Arquive uma conversa para ela aparecer aqui.'
+                  : 'Inicie uma nova conversa e crie seu plano de estudos.'}
+              </p>
+            </div>
             {!showArchived && (
               <button
                 onClick={handleNewChat}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="rounded-3xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-indigo-400"
               >
-                Nova Conversa
+                Nova conversa
               </button>
             )}
           </div>
         ) : (
-          <div className="divide-y">
+          <div className="flex flex-col gap-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 200px)' }}>
             {filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="p-4 hover:bg-gray-50 transition-colors group"
+                className="group cursor-pointer overflow-hidden rounded-3xl border border-white/5 bg-slate-900/40 p-5 transition hover:-translate-y-0.5 hover:border-cyan-400/40"
+                onClick={() => handleChatClick(chat.id)}
               >
-                <div className="flex items-start justify-between">
-                  <div 
-                    className="flex-1 min-w-0 cursor-pointer"
-                    onClick={() => handleChatClick(chat.id)}
-                  >
-                    <div className="flex items-center space-x-2 mb-1">
-                      {editingChatId === chat.id ? (
-                        <div className="flex items-center space-x-2 flex-1">
-                          <input
-                            type="text"
-                            value={editedTitle}
-                            onChange={(e) => setEditedTitle(e.target.value)}
-                            onClick={(e) => e.stopPropagation()}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                handleSaveTitle(chat.id);
-                              } else if (e.key === 'Escape') {
-                                handleCancelEdit();
-                              }
-                            }}
-                            className="flex-1 px-2 py-1 border border-blue-500 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            autoFocus
-                          />
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    {editingChatId === chat.id ? (
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <input
+                          type="text"
+                          value={editedTitle}
+                          onChange={(e) => setEditedTitle(e.target.value)}
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSaveTitle(chat.id);
+                            } else if (e.key === 'Escape') {
+                              handleCancelEdit();
+                            }
+                          }}
+                          className="flex-1 rounded-2xl border border-cyan-400/40 bg-slate-900/40 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
+                          autoFocus
+                        />
+                        <div className="flex items-center gap-2">
                           <button
                             onClick={(e) => handleSaveTitle(chat.id, e)}
-                            className="p-1 text-green-600 hover:bg-green-50 rounded"
+                            className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-2 text-emerald-200 transition hover:bg-emerald-500/20"
+                            aria-label="Salvar título"
                           >
-                            <Save className="w-4 h-4" />
+                            <Save className="h-4 w-4" />
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleCancelEdit();
                             }}
-                            className="p-1 text-gray-600 hover:bg-gray-100 rounded"
+                            className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:text-white"
+                            aria-label="Cancelar edição"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="h-4 w-4" />
                           </button>
                         </div>
-                      ) : (
-                        <>
-                          <h3 className="text-base font-semibold text-gray-900 truncate">
-                            {chat.title}
-                          </h3>
-                          {chat.is_archived && (
-                            <Archive className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                          )}
-                        </>
-                      )}
-                    </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{formatDate(chat.updated_at)}</span>
                       </div>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-lg font-semibold text-white truncate">{chat.title}</h3>
+                        {chat.is_archived && <span className="chip border-white/20 text-white/70">Arquivada</span>}
+                      </div>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-white/60">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {formatDate(chat.updated_at)}
+                      </span>
+                      <span className="chip border-white/20 text-white/60">#{chat.id.slice(0, 8)}</span>
                     </div>
                   </div>
-                  
+
                   {editingChatId !== chat.id && (
-                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
                       <button
                         onClick={(e) => handleEditTitle(chat, e)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:border-cyan-400/40 hover:text-white"
                         title="Editar título"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleArchiveChat(chat, e)}
-                        className="p-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                        className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:border-cyan-400/40 hover:text-white"
                         title={chat.is_archived ? 'Desarquivar' : 'Arquivar'}
                       >
-                        <Archive className="w-4 h-4" />
+                        <Archive className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleDeleteClick(chat, e)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                        className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-2 text-rose-200 transition hover:bg-rose-500/20"
                         title="Deletar conversa"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   )}
@@ -354,9 +399,8 @@ const ChatHistory = () => {
             ))}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Dialog de Confirmação */}
       <ConfirmDialog
         isOpen={deletingChatId !== null}
         title="Deletar Conversa"
@@ -368,13 +412,11 @@ const ChatHistory = () => {
         onCancel={() => setDeletingChatId(null)}
       />
 
-      {/* Tutorial Modal */}
       <TutorialModal
         isOpen={showTutorial}
         onClose={() => {
           setShowTutorial(false);
           localStorage.setItem('tutorialSeen', 'true');
-          // Limpar o state da navegação
           navigate(location.pathname, { replace: true, state: {} });
         }}
       />

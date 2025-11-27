@@ -200,17 +200,17 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col h-full w-full bg-white rounded-lg shadow-lg border">
-      <div className="p-6 border-b">
+    <div className="flex h-full w-full flex-col rounded-[36px] border border-white/10 bg-slate-950/70 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl">
+      <div className="border-b border-white/10 p-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Perfil do Usuário</h1>
+          <h1 className="text-2xl font-bold">Perfil do Usuário</h1>
           <div className="flex items-center space-x-2">
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-cyan-400/40 hover:text-white"
               >
-                <Edit3 className="w-4 h-4 mr-2" />
+                <Edit3 className="h-4 w-4" />
                 Editar
               </button>
             ) : (
@@ -218,25 +218,25 @@ const Profile = () => {
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2 text-sm font-medium text-white transition disabled:opacity-50"
                 >
                   {isSaving ? (
                     <>
-                      <span className="animate-spin mr-2">⏳</span>
+                      <span className="mr-2 animate-spin">⏳</span>
                       Salvando...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4 mr-2" />
+                      <Save className="h-4 w-4" />
                       Salvar
                     </>
                   )}
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/70 transition hover:border-white/30 hover:text-white"
                 >
-                  <X className="w-4 h-4 mr-2" />
+                  <X className="h-4 w-4" />
                   Cancelar
                 </button>
               </>
@@ -245,9 +245,9 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-6 overflow-y-auto">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center space-x-6 mb-8">
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-8 flex items-center space-x-6">
             <div className="relative group">
               <div className="relative">
                 <Avatar
@@ -278,12 +278,12 @@ const Profile = () => {
               />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
-              <p className="text-gray-600">@{user.username}</p>
+              <h2 className="text-xl font-semibold text-white">{user.name}</h2>
+              <p className="text-white/60">@{user.username}</p>
               <button
                 onClick={handleAvatarClick}
                 disabled={isUploadingAvatar}
-                className="mt-2 text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
+                className="mt-2 text-sm text-cyan-200 hover:text-white disabled:opacity-50"
               >
                 {isUploadingAvatar ? 'Enviando...' : 'Alterar avatar'}
               </button>
@@ -291,15 +291,15 @@ const Profile = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <User className="w-5 h-5 mr-2" />
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
+                <User className="mr-2 h-5 w-5 text-cyan-200" />
                 Informações Pessoais
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-white/70">
                     Nome Completo
                   </label>
                   {isEditing ? (
@@ -307,15 +307,15 @@ const Profile = () => {
                       type="text"
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 text-white focus:border-cyan-400/60 focus:outline-none"
                     />
                   ) : (
-                    <p className="text-gray-900">{user.name}</p>
+                    <p className="text-white">{user.name}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-white/70">
                     Email
                   </label>
                   {isEditing ? (
@@ -323,50 +323,50 @@ const Profile = () => {
                       type="email"
                       value={editedEmail}
                       onChange={(e) => setEditedEmail(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 text-white focus:border-cyan-400/60 focus:outline-none"
                     />
                   ) : (
-                    <p className="text-gray-900">{user.email}</p>
+                    <p className="text-white">{user.email}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-white/70">
                     Nome de Usuário
                   </label>
-                  <p className="text-gray-900">@{user.username}</p>
+                  <p className="text-white">@{user.username}</p>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-white/70">
                     ID do Usuário
                   </label>
-                  <p className="text-gray-900 font-mono text-sm">{user.id}</p>
+                  <p className="font-mono text-sm text-white/80">{user.id}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <Settings className="w-5 h-5 mr-2" />
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
+                <Settings className="mr-2 h-5 w-5 text-cyan-200" />
                 Configurações da Conta
               </h3>
               
               <div className="space-y-4">
                 {/* Seção de Alterar Senha */}
-                <div className="bg-white rounded-lg border p-4">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center">
-                      <Lock className="w-5 h-5 mr-2 text-gray-700" />
+                      <Lock className="mr-2 h-5 w-5 text-white/70" />
                       <div>
-                        <h4 className="font-medium text-gray-900">Alterar Senha</h4>
-                        <p className="text-sm text-gray-600">Atualize sua senha de acesso</p>
+                        <h4 className="font-medium text-white">Alterar Senha</h4>
+                        <p className="text-sm text-white/60">Atualize sua senha de acesso</p>
                       </div>
                     </div>
                     {!isChangingPassword && (
                       <button
                         onClick={() => setIsChangingPassword(true)}
-                        className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-cyan-400/40 hover:text-white"
                       >
                         Alterar
                       </button>
@@ -374,20 +374,20 @@ const Profile = () => {
                   </div>
 
                   {isChangingPassword && (
-                    <div className="space-y-4 mt-4">
+                    <div className="mt-4 space-y-4">
                       {passwordError && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
                           {passwordError}
                         </div>
                       )}
                       {passwordSuccess && (
-                        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                        <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
                           {passwordSuccess}
                         </div>
                       )}
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="mb-2 block text-sm font-medium text-white/70">
                           Senha Atual
                         </label>
                         <div className="relative">
@@ -395,25 +395,25 @@ const Profile = () => {
                             type={showCurrentPassword ? 'text' : 'password'}
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
                             placeholder="Digite sua senha atual"
                           />
                           <button
                             type="button"
                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
                           >
                             {showCurrentPassword ? (
-                              <EyeOff className="w-5 h-5" />
+                              <EyeOff className="h-5 w-5" />
                             ) : (
-                              <Eye className="w-5 h-5" />
+                              <Eye className="h-5 w-5" />
                             )}
                           </button>
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="mb-2 block text-sm font-medium text-white/70">
                           Nova Senha
                         </label>
                         <div className="relative">
@@ -421,25 +421,25 @@ const Profile = () => {
                             type={showNewPassword ? 'text' : 'password'}
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
                             placeholder="Digite sua nova senha"
                           />
                           <button
                             type="button"
                             onClick={() => setShowNewPassword(!showNewPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
                           >
                             {showNewPassword ? (
-                              <EyeOff className="w-5 h-5" />
+                              <EyeOff className="h-5 w-5" />
                             ) : (
-                              <Eye className="w-5 h-5" />
+                              <Eye className="h-5 w-5" />
                             )}
                           </button>
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="mb-2 block text-sm font-medium text-white/70">
                           Confirmar Nova Senha
                         </label>
                         <div className="relative">
@@ -447,18 +447,18 @@ const Profile = () => {
                             type={showConfirmPassword ? 'text' : 'password'}
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
                             placeholder="Confirme sua nova senha"
                           />
                           <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
                           >
                             {showConfirmPassword ? (
-                              <EyeOff className="w-5 h-5" />
+                              <EyeOff className="h-5 w-5" />
                             ) : (
-                              <Eye className="w-5 h-5" />
+                              <Eye className="h-5 w-5" />
                             )}
                           </button>
                         </div>
@@ -468,26 +468,26 @@ const Profile = () => {
                         <button
                           onClick={handleChangePassword}
                           disabled={isChangingPasswordLoading}
-                          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white transition disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {isChangingPasswordLoading ? (
                             <>
-                              <span className="animate-spin mr-2">⏳</span>
+                              <span className="mr-2 animate-spin">⏳</span>
                               Alterando...
                             </>
                           ) : (
                             <>
-                              <Save className="w-4 h-4 mr-2" />
-                              Salvar Nova Senha
+                              <Save className="h-4 w-4" />
+                              Salvar
                             </>
                           )}
                         </button>
                         <button
                           onClick={handleCancelPasswordChange}
                           disabled={isChangingPasswordLoading}
-                          className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                          className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/70 transition hover:text-white disabled:opacity-50"
                         >
-                          <X className="w-4 h-4 mr-2" />
+                          <X className="h-4 w-4" />
                           Cancelar
                         </button>
                       </div>
@@ -497,22 +497,22 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="bg-red-50 rounded-lg p-6 border border-red-200">
-              <h3 className="text-lg font-medium text-red-900 mb-4 flex items-center">
-                <LogOut className="w-5 h-5 mr-2" />
+            <div className="rounded-3xl border border-rose-400/30 bg-rose-500/10 p-6">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
+                <LogOut className="mr-2 h-5 w-5" />
                 Zona de Perigo
               </h3>
               
               <div className="space-y-4">
-                <p className="text-red-700 text-sm">
+                <p className="text-sm text-white/80">
                   Ações nesta seção são irreversíveis. Tenha cuidado.
                 </p>
                 
                 <button
                   onClick={logout}
-                  className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:from-rose-400 hover:to-rose-600"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="h-4 w-4" />
                   Sair da Conta
                 </button>
               </div>
