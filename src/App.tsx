@@ -28,8 +28,8 @@ function App() {
                   <ProtectedRoute>
                     <div className="relative z-10 flex min-h-screen flex-col gap-4 px-4 py-4 md:px-6 lg:flex-row lg:px-8 lg:py-8">
                       <Sidebar />
-                      <main className="flex-1 overflow-x-hidden overflow-y-auto">
-                        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 pb-10">
+                      <main className="flex-1 overflow-x-hidden">
+                        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 pb-10">
                           <Routes>
                             <Route path="/" element={<ChatHistory />} />
                             <Route path="/chat" element={<Chat />} />

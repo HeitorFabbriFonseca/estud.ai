@@ -302,7 +302,7 @@ const Chat = () => {
   if (loadingChat) {
     return (
       <div className="w-full">
-        <div className="frosted-card flex min-h-[60vh] flex-col items-center justify-center gap-4">
+        <div className="frosted-card flex min-h-[50vh] flex-col items-center justify-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
             <Sparkles className="h-6 w-6 animate-spin text-cyan-200" />
           </div>
@@ -316,9 +316,9 @@ const Chat = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="flex w-full flex-col">
       <div className="rounded-[32px] border border-white/5 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
-        <div className="flex min-h-[72vh] flex-col">
+        <div className="flex flex-col">
           <div className="rounded-t-[32px] border-b border-white/5 bg-white/[0.04] px-6 py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>

@@ -308,7 +308,7 @@ const ChatHistory = () => {
             )}
           </div>
         ) : (
-          <div className="flex flex-col gap-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 220px)' }}>
+          <div className="flex flex-col gap-4">
             {filteredChats.map((chat) => (
               <div
                 key={chat.id}
