@@ -315,7 +315,7 @@ const ChatHistory = () => {
                 className="group cursor-pointer rounded-3xl border border-white/5 bg-slate-900/50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200/40"
                 onClick={() => handleChatClick(chat.id)}
               >
-                <div className="flex items-center justify-between gap-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex-1 min-w-0">
                     {editingChatId === chat.id ? (
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -370,7 +370,7 @@ const ChatHistory = () => {
                   </div>
 
                   {editingChatId !== chat.id && (
-                    <div className="flex shrink-0 items-center gap-2 text-white/80 transition md:opacity-0 md:group-hover:opacity-100">
+                    <div className="flex shrink-0 items-center gap-2 text-white/80 transition sm:justify-end md:opacity-0 md:group-hover:opacity-100">
                       <button
                         onClick={(e) => handleEditTitle(chat, e)}
                         className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"

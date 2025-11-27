@@ -13,7 +13,6 @@ const navItems = [
 const Sidebar = () => {
   const { user, logout } = useAuth();
   const preferredName = user?.name?.split(' ')[0] || 'Estudante';
-  const weeklyProgress = 68;
 
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `group flex items-center rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
@@ -38,20 +37,8 @@ const Sidebar = () => {
         <p className="text-sm text-white/70">Bom estudo,</p>
         <p className="text-lg font-semibold text-white">{preferredName}</p>
         <p className="mt-2 text-xs text-white/60">
-          Continue consistente para alcançar sua meta semanal.
+          Use o EstudAI para planejar sua próxima sessão.
         </p>
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/60">
-            <span>Foco semanal</span>
-            <span>{weeklyProgress}%</span>
-          </div>
-          <div className="h-2 rounded-full bg-white/10">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-slate-200 via-blue-200 to-slate-100"
-              style={{ width: `${weeklyProgress}%` }}
-            />
-          </div>
-        </div>
       </div>
 
       <nav className="mt-8 space-y-2">
