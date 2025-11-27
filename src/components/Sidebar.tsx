@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { MessageSquare, Settings, User, LogOut, History, Sparkles } from 'lucide-react';
+import { MessageSquare, User, LogOut, History, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { Avatar } from './Avatar';
 
 const navItems = [
   { to: '/', label: 'Conversas', icon: History },
   { to: '/chat', label: 'Nova conversa', icon: MessageSquare },
-  { to: '/settings', label: 'Configurações', icon: Settings },
   { to: '/profile', label: 'Perfil', icon: User },
 ];
 

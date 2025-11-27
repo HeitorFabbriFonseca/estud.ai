@@ -30,8 +30,8 @@ const Chat = () => {
   const lastMessageCountRef = useRef<number>(0);
   const quickPrompts = [
     'Monte um plano de estudos para revisar SQL em 5 dias.',
-    'Crie flashcards com os principais conceitos de redes de computadores.',
-    'Me ajude a transformar o edital da prova em tópicos priorizados.',
+    'Tenho uma prova de Direito do Trabalho dia 15',
+    'Quero aprender sobre o mercado financeiro em 60 dias',
   ];
 
   const loadChat = async (id: string) => {
@@ -314,9 +314,9 @@ const Chat = () => {
   }
 
   return (
-    <div className="flex w-full flex-col">
-      <div className="rounded-[32px] border border-slate-200 bg-white text-slate-800 shadow-xl shadow-slate-900/5">
-        <div className="flex flex-col">
+    <div className="flex h-full w-full flex-1 flex-col lg:min-h-0">
+      <div className="flex h-full flex-1 flex-col rounded-[32px] border border-slate-200 bg-white text-slate-800 shadow-xl shadow-slate-900/5 lg:max-h-[calc(100vh-8rem)]">
+        <div className="flex h-full flex-1 flex-col">
           <div className="rounded-t-[32px] border-b border-slate-100 bg-slate-50 px-6 py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -346,105 +346,109 @@ const Chat = () => {
             </div>
           </div>
 
-          <div className="flex-1 space-y-4 px-6 py-6">
-            {!hasUserMessages && (
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm font-medium text-slate-900">Sugestões rápidas</p>
-                <p className="text-sm text-slate-500">Use um atalho para começar mais rápido.</p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {quickPrompts.map((prompt) => (
-                    <button
-                      key={prompt}
-                      type="button"
-                      onClick={() => handlePromptInsert(prompt)}
-                      className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-600 transition hover:border-primary/30 hover:text-slate-900"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col space-y-4">
-              {messages.map((message, index) => {
-                const isAssistant = message.role === 'assistant';
-                return (
-                  <div
-                    key={index}
-                    className={`flex w-full ${isAssistant ? 'justify-start' : 'justify-end'}`}
-                  >
-                    <div
-                      className={`flex max-w-[80%] gap-3 ${isAssistant ? 'flex-row' : 'flex-row-reverse'}`}
-                    >
-                      <div
-                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl ${
-                          isAssistant
-                            ? 'border border-slate-200 bg-slate-100 text-primary'
-                            : 'bg-primary text-white'
-                        }`}
+          <div className="flex-1 px-6 py-6">
+            <div className="flex h-full min-h-0 flex-col space-y-4">
+              {!hasUserMessages && (
+                <div className="shrink-0 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm font-medium text-slate-900">Sugestões rápidas</p>
+                  <p className="text-sm text-slate-500">Use um atalho para começar mais rápido.</p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {quickPrompts.map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={() => handlePromptInsert(prompt)}
+                        className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-600 transition hover:border-primary/30 hover:text-slate-900"
                       >
-                        {isAssistant ? (
-                          <Bot className="h-5 w-5" />
-                        ) : (
-                          <User className="h-5 w-5" />
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <div
-                          className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-slate-900/10 ${
-                            isAssistant
-                              ? 'border border-slate-200 bg-white text-slate-700'
-                              : 'border border-primary/30 bg-primary text-white'
-                          }`}
-                        >
-                          {isAssistant ? (
-                            <MarkdownRenderer content={message.content} className="space-y-3 text-slate-700" />
-                          ) : (
-                            <p className="whitespace-pre-wrap text-sm">{message.content}</p>
-                          )}
-                        </div>
-                        <div
-                          className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-slate-400 ${
-                            isAssistant ? 'justify-start' : 'justify-end'
-                          }`}
-                        >
-                          <Clock className="h-3 w-3" />
-                          {formatTime(message.timestamp)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="flex max-w-[80%] items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-primary">
-                      <Bot className="h-5 w-5" />
-                    </div>
-                    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-500">
-                      <div className="flex items-center gap-2">
-                        <span className="flex gap-1">
-                          <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
-                          <span
-                            className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
-                            style={{ animationDelay: '0.1s' }}
-                          />
-                          <span
-                            className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
-                            style={{ animationDelay: '0.2s' }}
-                          />
-                        </span>
-                        <span>Gerando resposta...</span>
-                      </div>
-                    </div>
+                        {prompt}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
+
+              <div className="flex-1 min-h-0 overflow-y-auto pr-2 scroll-shadow">
+                <div className="flex flex-col space-y-4">
+                  {messages.map((message, index) => {
+                    const isAssistant = message.role === 'assistant';
+                    return (
+                      <div
+                        key={index}
+                        className={`flex w-full ${isAssistant ? 'justify-start' : 'justify-end'}`}
+                      >
+                        <div
+                          className={`flex max-w-[80%] gap-3 ${isAssistant ? 'flex-row' : 'flex-row-reverse'}`}
+                        >
+                          <div
+                            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl ${
+                              isAssistant
+                                ? 'border border-slate-200 bg-slate-100 text-primary'
+                                : 'bg-primary text-white'
+                            }`}
+                          >
+                            {isAssistant ? (
+                              <Bot className="h-5 w-5" />
+                            ) : (
+                              <User className="h-5 w-5" />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <div
+                              className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-slate-900/10 ${
+                                isAssistant
+                                  ? 'border border-slate-200 bg-white text-slate-700'
+                                  : 'border border-primary/30 bg-primary text-white'
+                              }`}
+                            >
+                              {isAssistant ? (
+                                <MarkdownRenderer content={message.content} className="space-y-3 text-slate-700" />
+                              ) : (
+                                <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                              )}
+                            </div>
+                            <div
+                              className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-slate-400 ${
+                                isAssistant ? 'justify-start' : 'justify-end'
+                              }`}
+                            >
+                              <Clock className="h-3 w-3" />
+                              {formatTime(message.timestamp)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="flex max-w-[80%] items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-primary">
+                          <Bot className="h-5 w-5" />
+                        </div>
+                        <div className="rounded-3xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-500">
+                          <div className="flex items-center gap-2">
+                            <span className="flex gap-1">
+                              <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
+                              <span
+                                className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
+                                style={{ animationDelay: '0.1s' }}
+                              />
+                              <span
+                                className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
+                                style={{ animationDelay: '0.2s' }}
+                              />
+                            </span>
+                            <span>Gerando resposta...</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              </div>
             </div>
           </div>
 

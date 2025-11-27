@@ -246,8 +246,8 @@ const Profile = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-6">
-        <div className="mx-auto max-w-2xl">
-          <div className="mb-8 flex items-center space-x-6">
+        <div className="mx-auto w-full max-w-5xl space-y-8">
+          <div className="flex flex-col items-start gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:gap-10">
             <div className="relative group">
               <div className="relative">
                 <Avatar
@@ -290,9 +290,10 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+            <section className="space-y-6">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
                 <User className="mr-2 h-5 w-5 text-primary" />
                 Informações Pessoais
               </h3>
@@ -346,15 +347,15 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
-                <Settings className="mr-2 h-5 w-5 text-primary" />
-                Configurações da Conta
-              </h3>
-              
-              <div className="space-y-4">
-                {/* Seção de Alterar Senha */}
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
+                  <Settings className="mr-2 h-5 w-5 text-primary" />
+                  Configurações da Conta
+                </h3>
+                
+                <div className="space-y-4">
+                  {/* Seção de Alterar Senha */}
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center">
                       <Lock className="mr-2 h-5 w-5 text-slate-500" />
@@ -493,30 +494,52 @@ const Profile = () => {
                       </div>
                     </div>
                   )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-rose-900">
-                <LogOut className="mr-2 h-5 w-5" />
-                Zona de Perigo
-              </h3>
-              
-              <div className="space-y-4">
-                <p className="text-sm text-rose-700">
-                  Ações nesta seção são irreversíveis. Tenha cuidado.
-                </p>
-                
-                <button
-                  onClick={logout}
-                  className="flex items-center gap-2 rounded-2xl bg-rose-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-rose-600"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sair da Conta
-                </button>
+            <aside className="space-y-6">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 text-lg font-semibold text-slate-900">Resumo</h3>
+                <div className="space-y-3 text-sm text-slate-600">
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Email</p>
+                    <p className="text-sm font-medium text-slate-900 break-all">{user.email}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Usuário</p>
+                    <p className="text-sm font-medium text-slate-900">@{user.username}</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">ID</p>
+                    <p className="text-sm font-mono text-slate-900 break-all">{user.id}</p>
+                  </div>
+                </div>
               </div>
-            </div>
+
+              <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6">
+                <h3 className="mb-4 flex items-center text-lg font-medium text-rose-900">
+                  <LogOut className="mr-2 h-5 w-5" />
+                  Zona de Perigo
+                </h3>
+                
+                <div className="space-y-4">
+                  <p className="text-sm text-rose-700">
+                    Ações nesta seção são irreversíveis. Tenha cuidado.
+                  </p>
+                  
+                  <button
+                    onClick={logout}
+                    className="flex items-center gap-2 rounded-2xl bg-rose-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-rose-600"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sair da Conta
+                  </button>
+                </div>
+              </div>
+            </aside>
+          </div>
           </div>
         </div>
       </div>
