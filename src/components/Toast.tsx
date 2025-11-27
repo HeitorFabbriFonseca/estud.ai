@@ -55,7 +55,7 @@ const ToastComponent = ({ toast, onClose }: ToastProps) => {
       </div>
       <div className="flex flex-1 flex-col">
         <p className="text-sm font-medium leading-snug">{toast.message}</p>
-        <span className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <span className="mt-1 text-[11px] uppercase tracking-[0.12em] text-white/50">
           EstudAI
         </span>
       </div>

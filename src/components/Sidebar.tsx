@@ -26,7 +26,7 @@ const Sidebar = () => {
     <aside className="flex w-full flex-col rounded-[28px] border border-white/5 bg-slate-900/70 p-6 text-white shadow-xl shadow-black/30 backdrop-blur-lg lg:w-72 lg:shrink-0">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-white/60">EstudAI</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-white/60">EstudAI</p>
           <h1 className="text-2xl font-bold text-white">Painel</h1>
         </div>
         <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
@@ -41,7 +41,7 @@ const Sidebar = () => {
           Continue consistente para alcançar sua meta semanal.
         </p>
         <div className="mt-4 space-y-2">
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.4em] text-white/60">
+          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/60">
             <span>Foco semanal</span>
             <span>{weeklyProgress}%</span>
           </div>

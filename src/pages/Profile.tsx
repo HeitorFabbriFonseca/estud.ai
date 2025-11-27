@@ -468,7 +468,7 @@ const Profile = () => {
                         <button
                           onClick={handleChangePassword}
                           disabled={isChangingPasswordLoading}
-                          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+                          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {isChangingPasswordLoading ? (
                             <>
@@ -510,7 +510,7 @@ const Profile = () => {
                 
                 <button
                   onClick={logout}
-                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:from-rose-400 hover:to-rose-600"
+                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:from-rose-400 hover:to-rose-600"
                 >
                   <LogOut className="h-4 w-4" />
                   Sair da Conta

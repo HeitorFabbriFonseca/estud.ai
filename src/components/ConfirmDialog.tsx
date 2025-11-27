@@ -38,7 +38,7 @@ const ConfirmDialog = ({
               <AlertTriangle className="h-6 w-6 text-rose-200" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-white/60">Confirmação</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-white/60">Confirmação</p>
               <h3 className="text-lg font-semibold text-white">{title}</h3>
             </div>
           </div>

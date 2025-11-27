@@ -99,7 +99,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-2xl border border-white/10 bg-white py-3 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-2xl border border-white/10 bg-white py-3 text-sm font-semibold uppercase tracking-[0.15em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>

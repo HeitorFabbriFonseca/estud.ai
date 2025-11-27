@@ -322,7 +322,7 @@ const Chat = () => {
           <div className="rounded-t-[32px] border-b border-white/5 bg-white/[0.04] px-6 py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/60">Assistente de estudos</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60">Assistente de estudos</p>
                 <h2 className="text-2xl font-semibold text-white">
                   {currentChat?.title || 'Nova conversa inteligente'}
                 </h2>
@@ -408,7 +408,7 @@ const Chat = () => {
                           )}
                         </div>
                         <div
-                          className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.35em] text-white/40 ${
+                          className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-white/40 ${
                             isAssistant ? 'justify-start' : 'justify-end'
                           }`}
                         >
@@ -474,7 +474,7 @@ const Chat = () => {
                   <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-slate-200/90 text-sm font-semibold uppercase tracking-[0.3em] text-slate-900 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 md:w-20"
+                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-slate-200/90 text-sm font-semibold uppercase tracking-[0.16em] text-slate-900 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 md:w-20"
                   >
                     <Send className="h-5 w-5" />
                   </button>

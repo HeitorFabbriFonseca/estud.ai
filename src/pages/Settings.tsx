@@ -73,7 +73,7 @@ const Settings = () => {
     <div className="w-full space-y-6">
       <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-8 text-white shadow-xl shadow-black/30 backdrop-blur-lg">
         <div className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/60">Configurações</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-white/60">Configurações</p>
           <h1 className="text-3xl font-semibold">Personalize sua experiência</h1>
           <p className="text-white/70">
             Controle seus dados, exporte conversas e saiba mais sobre o EstudAI.
@@ -100,7 +100,7 @@ const Settings = () => {
               <button
                 onClick={handleExportData}
                 disabled={isExporting}
-                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white text-sm font-semibold uppercase tracking-[0.25em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white text-sm font-semibold uppercase tracking-[0.14em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isExporting ? 'Exportando...' : 'Exportar dados'}
               </button>
@@ -113,7 +113,7 @@ const Settings = () => {
               </p>
               <button
                 onClick={() => setShowClearDialog(true)}
-                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-rose-200/50 bg-transparent px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-rose-100 transition hover:bg-rose-500/20"
+                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-rose-200/50 bg-transparent px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-rose-100 transition hover:bg-rose-500/20"
               >
                 Limpar dados locais
               </button>
@@ -134,15 +134,15 @@ const Settings = () => {
 
           <div className="mt-6 space-y-4">
             <div className="rounded-2xl border border-white/5 bg-slate-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/60">Versão</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-white/60">Versão</p>
               <p className="mt-1 text-lg font-semibold text-white">1.0.0</p>
             </div>
             <div className="rounded-2xl border border-white/5 bg-slate-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/60">Desenvolvido por</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-white/60">Desenvolvido por</p>
               <p className="mt-1 text-lg font-semibold text-white">Equipe EstudAI</p>
             </div>
             <div className="rounded-2xl border border-white/5 bg-slate-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-white/60">Licença</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-white/60">Licença</p>
               <p className="mt-1 text-lg font-semibold text-white">MIT License</p>
             </div>
           </div>

@@ -194,7 +194,7 @@ const ChatHistory = () => {
       <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-8 text-white shadow-xl shadow-black/30 backdrop-blur-lg">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">
               {showArchived ? 'Histórico arquivado' : 'Painel de conversas'}
             </p>
             <h2 className="text-3xl font-semibold">Mantenha seus estudos organizados</h2>
@@ -203,7 +203,7 @@ const ChatHistory = () => {
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleNewChat}
-              className="rounded-3xl bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-slate-900 shadow-lg shadow-cyan-500/30 transition hover:bg-slate-100"
+              className="rounded-3xl bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-900 shadow-lg shadow-cyan-500/20 transition hover:bg-slate-100"
             >
               Nova conversa
             </button>
@@ -212,17 +212,17 @@ const ChatHistory = () => {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Ativas</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Ativas</p>
             <p className="mt-2 text-3xl font-semibold">{activeCount}</p>
             <p className="text-sm text-white/60">conversas acompanhando sua evolução</p>
           </div>
           <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Arquivadas</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Arquivadas</p>
             <p className="mt-2 text-3xl font-semibold">{archivedCount}</p>
             <p className="text-sm text-white/60">conteúdos guardados para consulta</p>
           </div>
           <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.4em] text-white/60">Última atualização</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Última atualização</p>
             <p className="mt-2 text-3xl font-semibold">{lastUpdatedChatDate}</p>
             <p className="text-sm text-white/60">registro mais recente</p>
           </div>
@@ -233,7 +233,7 @@ const ChatHistory = () => {
           <div className="flex rounded-full border border-white/20 p-1">
             <button
               onClick={() => setShowArchived(false)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition ${
                 !showArchived ? 'bg-white text-slate-900' : 'text-white/70'
               }`}
             >
@@ -241,7 +241,7 @@ const ChatHistory = () => {
             </button>
             <button
               onClick={() => setShowArchived(true)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition ${
                 showArchived ? 'bg-white text-slate-900' : 'text-white/70'
               }`}
             >
@@ -272,7 +272,7 @@ const ChatHistory = () => {
               </button>
             )}
           </div>
-          <p className="text-xs uppercase tracking-[0.35em] text-white/50">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/50">
             {filteredChats.length} resultado{filteredChats.length === 1 ? '' : 's'}
           </p>
         </div>
@@ -301,7 +301,7 @@ const ChatHistory = () => {
             {!showArchived && (
               <button
                 onClick={handleNewChat}
-                className="rounded-3xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-indigo-400"
+                className="rounded-3xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-indigo-400"
               >
                 Nova conversa
               </button>
@@ -312,10 +312,10 @@ const ChatHistory = () => {
             {filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="group cursor-pointer overflow-hidden rounded-3xl border border-white/5 bg-slate-900/50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200/40"
+                className="group cursor-pointer rounded-3xl border border-white/5 bg-slate-900/50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200/40"
                 onClick={() => handleChatClick(chat.id)}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center justify-between gap-6">
                   <div className="flex-1 min-w-0">
                     {editingChatId === chat.id ? (
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -370,7 +370,7 @@ const ChatHistory = () => {
                   </div>
 
                   {editingChatId !== chat.id && (
-                    <div className="flex items-center gap-2 text-white/80 transition md:opacity-0 md:group-hover:opacity-100">
+                    <div className="flex shrink-0 items-center gap-2 text-white/80 transition md:opacity-0 md:group-hover:opacity-100">
                       <button
                         onClick={(e) => handleEditTitle(chat, e)}
                         className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"
