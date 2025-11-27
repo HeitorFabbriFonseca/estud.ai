@@ -200,15 +200,15 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="flex h-full w-full flex-col rounded-[32px] border border-white/5 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
-      <div className="border-b border-white/5 p-6">
+    <div className="flex h-full w-full flex-col rounded-[32px] border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-900/5">
+      <div className="border-b border-slate-100 p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Perfil do Usuário</h1>
           <div className="flex items-center space-x-2">
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-cyan-400/40 hover:text-white"
+                className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
               >
                 <Edit3 className="h-4 w-4" />
                 Editar
@@ -218,7 +218,7 @@ const Profile = () => {
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2 text-sm font-medium text-white transition disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50"
                 >
                   {isSaving ? (
                     <>
@@ -234,7 +234,7 @@ const Profile = () => {
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/70 transition hover:border-white/30 hover:text-white"
+                  className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
                 >
                   <X className="h-4 w-4" />
                   Cancelar
@@ -263,9 +263,9 @@ const Profile = () => {
                   title="Clique para alterar o avatar"
                 >
                   {isUploadingAvatar ? (
-                    <span className="text-white animate-spin text-2xl">⏳</span>
+                    <span className="text-slate-600 animate-spin text-2xl">⏳</span>
                   ) : (
-                    <Camera className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Camera className="w-8 h-8 text-slate-100 opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}
                 </button>
               </div>
@@ -278,12 +278,12 @@ const Profile = () => {
               />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-white">{user.name}</h2>
-              <p className="text-white/60">@{user.username}</p>
+              <h2 className="text-xl font-semibold text-slate-900">{user.name}</h2>
+              <p className="text-slate-500">@{user.username}</p>
               <button
                 onClick={handleAvatarClick}
                 disabled={isUploadingAvatar}
-                className="mt-2 text-sm text-cyan-200 hover:text-white disabled:opacity-50"
+                className="mt-2 text-sm text-primary hover:text-primary/80 disabled:opacity-50"
               >
                 {isUploadingAvatar ? 'Enviando...' : 'Alterar avatar'}
               </button>
@@ -291,15 +291,15 @@ const Profile = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
-                <User className="mr-2 h-5 w-5 text-cyan-200" />
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
+                <User className="mr-2 h-5 w-5 text-primary" />
                 Informações Pessoais
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-white/70">
+                  <label className="mb-2 block text-sm font-medium text-slate-500">
                     Nome Completo
                   </label>
                   {isEditing ? (
@@ -307,15 +307,15 @@ const Profile = () => {
                       type="text"
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 text-white focus:border-cyan-400/60 focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-primary/40 focus:outline-none"
                     />
                   ) : (
-                    <p className="text-white">{user.name}</p>
+                    <p className="text-slate-900">{user.name}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-white/70">
+                  <label className="mb-2 block text-sm font-medium text-slate-500">
                     Email
                   </label>
                   {isEditing ? (
@@ -323,50 +323,50 @@ const Profile = () => {
                       type="email"
                       value={editedEmail}
                       onChange={(e) => setEditedEmail(e.target.value)}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 text-white focus:border-cyan-400/60 focus:outline-none"
+                      className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-primary/40 focus:outline-none"
                     />
                   ) : (
-                    <p className="text-white">{user.email}</p>
+                    <p className="text-slate-900">{user.email}</p>
                   )}
                 </div>
                 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-white/70">
+                  <label className="mb-2 block text-sm font-medium text-slate-500">
                     Nome de Usuário
                   </label>
-                  <p className="text-white">@{user.username}</p>
+                  <p className="text-slate-900">@{user.username}</p>
                 </div>
                 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-white/70">
+                  <label className="mb-2 block text-sm font-medium text-slate-500">
                     ID do Usuário
                   </label>
-                  <p className="font-mono text-sm text-white/80">{user.id}</p>
+                  <p className="font-mono text-sm text-slate-500">{user.id}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
-                <Settings className="mr-2 h-5 w-5 text-cyan-200" />
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-slate-900">
+                <Settings className="mr-2 h-5 w-5 text-primary" />
                 Configurações da Conta
               </h3>
               
               <div className="space-y-4">
                 {/* Seção de Alterar Senha */}
-                <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center">
-                      <Lock className="mr-2 h-5 w-5 text-white/70" />
+                      <Lock className="mr-2 h-5 w-5 text-slate-500" />
                       <div>
-                        <h4 className="font-medium text-white">Alterar Senha</h4>
-                        <p className="text-sm text-white/60">Atualize sua senha de acesso</p>
+                        <h4 className="font-medium text-slate-900">Alterar Senha</h4>
+                        <p className="text-sm text-slate-500">Atualize sua senha de acesso</p>
                       </div>
                     </div>
                     {!isChangingPassword && (
                       <button
                         onClick={() => setIsChangingPassword(true)}
-                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-cyan-400/40 hover:text-white"
+                        className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
                       >
                         Alterar
                       </button>
@@ -376,18 +376,18 @@ const Profile = () => {
                   {isChangingPassword && (
                     <div className="mt-4 space-y-4">
                       {passwordError && (
-                        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+                        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
                           {passwordError}
                         </div>
                       )}
                       {passwordSuccess && (
-                        <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-600">
                           {passwordSuccess}
                         </div>
                       )}
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white/70">
+                        <label className="mb-2 block text-sm font-medium text-slate-500">
                           Senha Atual
                         </label>
                         <div className="relative">
@@ -395,13 +395,13 @@ const Profile = () => {
                             type={showCurrentPassword ? 'text' : 'password'}
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 pr-10 text-slate-900 focus:border-primary/40 focus:outline-none"
                             placeholder="Digite sua senha atual"
                           />
                           <button
                             type="button"
                             onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                           >
                             {showCurrentPassword ? (
                               <EyeOff className="h-5 w-5" />
@@ -413,7 +413,7 @@ const Profile = () => {
                       </div>
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white/70">
+                        <label className="mb-2 block text-sm font-medium text-slate-500">
                           Nova Senha
                         </label>
                         <div className="relative">
@@ -421,13 +421,13 @@ const Profile = () => {
                             type={showNewPassword ? 'text' : 'password'}
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 pr-10 text-slate-900 focus:border-primary/40 focus:outline-none"
                             placeholder="Digite sua nova senha"
                           />
                           <button
                             type="button"
                             onClick={() => setShowNewPassword(!showNewPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                           >
                             {showNewPassword ? (
                               <EyeOff className="h-5 w-5" />
@@ -439,7 +439,7 @@ const Profile = () => {
                       </div>
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-white/70">
+                        <label className="mb-2 block text-sm font-medium text-slate-500">
                           Confirmar Nova Senha
                         </label>
                         <div className="relative">
@@ -447,13 +447,13 @@ const Profile = () => {
                             type={showConfirmPassword ? 'text' : 'password'}
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full rounded-2xl border border-white/10 bg-slate-900/40 px-3 py-2 pr-10 text-white focus:border-cyan-400/60 focus:outline-none"
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 pr-10 text-slate-900 focus:border-primary/40 focus:outline-none"
                             placeholder="Confirme sua nova senha"
                           />
                           <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-5 w-5" />
@@ -465,11 +465,11 @@ const Profile = () => {
                       </div>
 
                       <div className="flex items-center space-x-2 pt-2">
-                        <button
-                          onClick={handleChangePassword}
-                          disabled={isChangingPasswordLoading}
-                          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition disabled:cursor-not-allowed disabled:opacity-50"
-                        >
+                      <button
+                        onClick={handleChangePassword}
+                        disabled={isChangingPasswordLoading}
+                        className="flex items-center gap-2 rounded-2xl bg-primary px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
                           {isChangingPasswordLoading ? (
                             <>
                               <span className="mr-2 animate-spin">⏳</span>
@@ -482,11 +482,11 @@ const Profile = () => {
                             </>
                           )}
                         </button>
-                        <button
-                          onClick={handleCancelPasswordChange}
-                          disabled={isChangingPasswordLoading}
-                          className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/70 transition hover:text-white disabled:opacity-50"
-                        >
+                      <button
+                        onClick={handleCancelPasswordChange}
+                        disabled={isChangingPasswordLoading}
+                        className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 disabled:opacity-50"
+                      >
                           <X className="h-4 w-4" />
                           Cancelar
                         </button>
@@ -497,20 +497,20 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-rose-200/40 bg-rose-500/10 p-6">
-              <h3 className="mb-4 flex items-center text-lg font-medium text-white">
+            <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6">
+              <h3 className="mb-4 flex items-center text-lg font-medium text-rose-900">
                 <LogOut className="mr-2 h-5 w-5" />
                 Zona de Perigo
               </h3>
               
               <div className="space-y-4">
-                <p className="text-sm text-white/80">
+                <p className="text-sm text-rose-700">
                   Ações nesta seção são irreversíveis. Tenha cuidado.
                 </p>
                 
                 <button
                   onClick={logout}
-                  className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:from-rose-400 hover:to-rose-600"
+                  className="flex items-center gap-2 rounded-2xl bg-rose-500 px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-rose-600"
                 >
                   <LogOut className="h-4 w-4" />
                   Sair da Conta

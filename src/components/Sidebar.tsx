@@ -17,26 +17,26 @@ const Sidebar = () => {
   const navLinkClasses = ({ isActive }: { isActive: boolean }) =>
     `group flex items-center rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
       isActive
-        ? 'bg-white/90 text-slate-900 shadow-md shadow-slate-900/10'
-        : 'text-slate-200 hover:bg-white/10 hover:text-white'
+        ? 'bg-primary text-white shadow-sm shadow-primary/30'
+        : 'text-slate-600 hover:bg-slate-100'
     }`;
 
   return (
-    <aside className="flex w-full flex-col rounded-[28px] border border-white/5 bg-slate-900/70 p-6 text-white shadow-xl shadow-black/30 backdrop-blur-lg lg:w-72 lg:shrink-0">
+    <aside className="flex w-full flex-col rounded-[28px] border border-slate-200 bg-white p-6 text-slate-800 shadow-xl shadow-slate-900/5 lg:w-72 lg:shrink-0">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-white/60">EstudAI</p>
-          <h1 className="text-2xl font-bold text-white">Painel</h1>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">EstudAI</p>
+          <h1 className="text-2xl font-bold text-slate-900">Painel</h1>
         </div>
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10">
-          <Sparkles className="h-5 w-5 text-cyan-200" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-primary">
+          <Sparkles className="h-5 w-5" />
         </div>
       </div>
 
-      <div className="mt-6 rounded-3xl border border-white/5 bg-white/[0.04] p-4">
-        <p className="text-sm text-white/70">Bom estudo,</p>
-        <p className="text-lg font-semibold text-white">{preferredName}</p>
-        <p className="mt-2 text-xs text-white/60">
+      <div className="mt-6 rounded-3xl border border-slate-100 bg-slate-50 p-4">
+        <p className="text-sm text-slate-500">Bom estudo,</p>
+        <p className="text-lg font-semibold text-slate-900">{preferredName}</p>
+        <p className="mt-2 text-xs text-slate-500">
           Use o EstudAI para planejar sua próxima sessão.
         </p>
       </div>
@@ -51,17 +51,17 @@ const Sidebar = () => {
       </nav>
 
       {user && (
-        <div className="mt-auto rounded-3xl border border-white/5 bg-white/[0.04] p-4">
+        <div className="mt-auto rounded-3xl border border-slate-100 bg-slate-50 p-4">
           <div className="flex items-center gap-3">
             <Avatar src={user.avatar} alt={user.name} size="md" showStatus statusColor="bg-emerald-400" />
             <div className="flex-1 truncate">
-              <p className="text-sm font-semibold text-white">{user.name}</p>
-              <p className="text-xs text-white/60">@{user.username}</p>
+              <p className="text-sm font-semibold text-slate-900">{user.name}</p>
+              <p className="text-xs text-slate-500">@{user.username}</p>
             </div>
           </div>
           <button
             onClick={logout}
-            className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-transparent px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/30 hover:text-white"
+            className="mt-4 flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Sair

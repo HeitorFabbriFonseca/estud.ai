@@ -24,27 +24,27 @@ const ConfirmDialog = ({
   if (!isOpen) return null;
 
   const buttonColors = {
-    red: 'from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700',
-    blue: 'from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700',
-    green: 'from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700',
+    red: 'bg-rose-500 hover:bg-rose-600',
+    blue: 'bg-primary hover:bg-primary/90',
+    green: 'bg-emerald-500 hover:bg-emerald-600',
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-md px-4">
-      <div className="w-full max-w-lg overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 backdrop-blur-sm px-4">
+      <div className="w-full max-w-lg overflow-hidden rounded-[28px] border border-slate-200 bg-white text-slate-900 shadow-2xl shadow-slate-900/10">
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/20">
-              <AlertTriangle className="h-6 w-6 text-rose-200" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-500">
+              <AlertTriangle className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/60">Confirmação</p>
-              <h3 className="text-lg font-semibold text-white">{title}</h3>
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Confirmação</p>
+              <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
             </div>
           </div>
           <button
             onClick={onCancel}
-            className="rounded-2xl border border-white/10 p-2 text-white/60 transition hover:border-white/30 hover:text-white"
+            className="rounded-2xl border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-100"
             aria-label="Fechar diálogo"
           >
             <X className="h-5 w-5" />
@@ -52,17 +52,17 @@ const ConfirmDialog = ({
         </div>
 
         <div className="px-6 py-6">
-          <p className="text-sm leading-relaxed text-white/80">{message}</p>
+          <p className="text-sm leading-relaxed text-slate-600">{message}</p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
             <button
               onClick={onCancel}
-              className="rounded-2xl border border-white/20 px-5 py-2.5 text-sm font-medium text-white/80 transition hover:border-white/40 hover:text-white"
+              className="rounded-2xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
             >
               {cancelText}
             </button>
             <button
               onClick={onConfirm}
-              className={`rounded-2xl bg-gradient-to-r px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-black/30 transition ${buttonColors[confirmButtonColor]}`}
+              className={`rounded-2xl px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition ${buttonColors[confirmButtonColor]}`}
             >
               {confirmText}
             </button>

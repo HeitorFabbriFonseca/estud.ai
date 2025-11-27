@@ -302,14 +302,12 @@ const Chat = () => {
   if (loadingChat) {
     return (
       <div className="w-full">
-        <div className="frosted-card flex min-h-[50vh] flex-col items-center justify-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
-            <Sparkles className="h-6 w-6 animate-spin text-cyan-200" />
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-slate-700 shadow-sm">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Sparkles className="h-6 w-6 animate-spin" />
           </div>
-          <div className="text-center">
-            <p className="text-base font-semibold text-white">Carregando conversa...</p>
-            <p className="text-sm text-white/70">Estamos preparando seu histórico</p>
-          </div>
+          <p className="text-base font-semibold text-slate-900">Carregando conversa...</p>
+          <p className="text-sm text-slate-500">Estamos preparando seu histórico</p>
         </div>
       </div>
     );
@@ -317,17 +315,17 @@ const Chat = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <div className="rounded-[32px] border border-white/5 bg-slate-950/60 text-white shadow-xl shadow-black/30 backdrop-blur-xl">
+      <div className="rounded-[32px] border border-slate-200 bg-white text-slate-800 shadow-xl shadow-slate-900/5">
         <div className="flex flex-col">
-          <div className="rounded-t-[32px] border-b border-white/5 bg-white/[0.04] px-6 py-6">
+          <div className="rounded-t-[32px] border-b border-slate-100 bg-slate-50 px-6 py-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-white/60">Assistente de estudos</p>
-                <h2 className="text-2xl font-semibold text-white">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Assistente de estudos</p>
+                <h2 className="text-2xl font-semibold text-slate-900">
                   {currentChat?.title || 'Nova conversa inteligente'}
                 </h2>
-                <div className="mt-1 flex items-center gap-2 text-sm text-white/70">
-                  <Sparkles className="h-4 w-4 text-cyan-200" />
+                <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+                  <Sparkles className="h-4 w-4 text-primary" />
                   <span>Crie planos personalizados, revise conteúdos e acompanhe sua evolução.</span>
                 </div>
               </div>
@@ -339,7 +337,7 @@ const Chat = () => {
                   {messages.length} mensagens
                 </span>
                 {isReadOnly && (
-                  <span className="chip border-rose-400/60 text-rose-100">
+                  <span className="chip border-rose-200 text-rose-500">
                     <Lock className="mr-2 h-3.5 w-3.5" />
                     Arquivo seguro
                   </span>
@@ -348,18 +346,18 @@ const Chat = () => {
             </div>
           </div>
 
-          <div className="flex-1 space-y-4 overflow-y-auto px-6 py-6">
+          <div className="flex-1 space-y-4 px-6 py-6">
             {!hasUserMessages && (
-              <div className="rounded-3xl border border-white/5 bg-white/[0.04] p-4">
-                <p className="text-sm font-medium text-white">Sugestões rápidas</p>
-                <p className="text-sm text-white/70">Use um atalho para começar mais rápido.</p>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-sm font-medium text-slate-900">Sugestões rápidas</p>
+                <p className="text-sm text-slate-500">Use um atalho para começar mais rápido.</p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {quickPrompts.map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
                       onClick={() => handlePromptInsert(prompt)}
-                      className="rounded-2xl border border-white/10 bg-slate-900/50 px-4 py-2 text-left text-sm text-white/80 transition hover:border-cyan-400/40 hover:text-white"
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-600 transition hover:border-primary/30 hover:text-slate-900"
                     >
                       {prompt}
                     </button>
@@ -382,8 +380,8 @@ const Chat = () => {
                       <div
                         className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl ${
                           isAssistant
-                            ? 'border border-white/10 bg-cyan-500/20 text-cyan-100'
-                            : 'bg-white text-slate-900'
+                            ? 'border border-slate-200 bg-slate-100 text-primary'
+                            : 'bg-primary text-white'
                         }`}
                       >
                         {isAssistant ? (
@@ -395,20 +393,20 @@ const Chat = () => {
 
                       <div className="space-y-2">
                         <div
-                          className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-black/20 ${
+                          className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-slate-900/10 ${
                             isAssistant
-                              ? 'border border-white/5 bg-white/[0.05] text-white'
-                              : 'border border-white/10 bg-white text-slate-900'
+                              ? 'border border-slate-200 bg-white text-slate-700'
+                              : 'border border-primary/30 bg-primary text-white'
                           }`}
                         >
                           {isAssistant ? (
-                            <MarkdownRenderer content={message.content} className="space-y-3 text-slate-100" />
+                            <MarkdownRenderer content={message.content} className="space-y-3 text-slate-700" />
                           ) : (
                             <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                           )}
                         </div>
                         <div
-                          className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-white/40 ${
+                          className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-slate-400 ${
                             isAssistant ? 'justify-start' : 'justify-end'
                           }`}
                         >
@@ -423,20 +421,20 @@ const Chat = () => {
 
               {isLoading && (
                 <div className="flex justify-start">
-                <div className="flex max-w-[80%] items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-slate-800/60 text-white/80">
+                  <div className="flex max-w-[80%] items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-primary">
                       <Bot className="h-5 w-5" />
                     </div>
-                    <div className="rounded-3xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm text-white/70">
+                    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-500">
                       <div className="flex items-center gap-2">
                         <span className="flex gap-1">
-                          <span className="h-2 w-2 animate-bounce rounded-full bg-white/60" />
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
                           <span
-                            className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+                            className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                             style={{ animationDelay: '0.1s' }}
                           />
                           <span
-                            className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+                            className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
                             style={{ animationDelay: '0.2s' }}
                           />
                         </span>
@@ -451,16 +449,16 @@ const Chat = () => {
           </div>
 
           {!isReadOnly ? (
-            <div className="rounded-b-[32px] border-t border-white/5 bg-slate-950/40 px-6 py-5">
+            <div className="rounded-b-[32px] border-t border-slate-100 bg-white px-6 py-5">
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-end">
-                  <div className="flex-1 rounded-3xl border border-white/5 bg-white/[0.04] px-5 py-3 transition focus-within:border-blue-200/60">
+                  <div className="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 transition focus-within:border-primary/40">
                     <textarea
                       ref={textareaRef}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Ex: Tenho uma prova de banco de dados dia 15"
-                      className="max-h-32 min-h-[54px] w-full resize-none bg-transparent text-sm text-white placeholder:text-white/40 focus:outline-none"
+                      className="max-h-32 min-h-[54px] w-full resize-none bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
                       rows={1}
                       disabled={isLoading}
                       onKeyDown={(e) => {
@@ -474,19 +472,19 @@ const Chat = () => {
                   <button
                     type="submit"
                     disabled={isLoading || !input.trim()}
-                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-slate-200/90 text-sm font-semibold uppercase tracking-[0.16em] text-slate-900 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 md:w-20"
+                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-primary text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 md:w-24"
                   >
                     <Send className="h-5 w-5" />
                   </button>
                 </div>
               </form>
-              <p className="mt-3 text-center text-xs text-white/60">
+              <p className="mt-3 text-center text-xs text-slate-500">
                 Enter envia · Shift + Enter adiciona nova linha
               </p>
             </div>
           ) : (
-            <div className="rounded-b-[32px] border-t border-white/5 bg-white/[0.04] px-6 py-5">
-              <div className="flex items-center justify-center gap-2 text-sm text-white/70">
+            <div className="rounded-b-[32px] border-t border-slate-100 bg-slate-50 px-6 py-5">
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
                 <Lock className="h-4 w-4" />
                 <span>Esta conversa está arquivada e permanece disponível apenas para leitura.</span>
               </div>

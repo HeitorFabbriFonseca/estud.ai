@@ -33,30 +33,26 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#070d18] px-4 py-10 text-white">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-16 top-10 h-64 w-64 rounded-full bg-sky-500/15 blur-[140px]" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-500/20 blur-[160px]" />
-      </div>
-      <div className="relative z-10 w-full max-w-md space-y-8">
-        <div className="rounded-[28px] border border-white/5 bg-slate-950/60 p-8 shadow-xl shadow-black/30 backdrop-blur-xl">
+    <div className="flex min-h-screen items-center justify-center bg-[#f7f9fc] px-4 py-10 text-slate-900">
+      <div className="w-full max-w-md space-y-8">
+        <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 via-sky-500 to-indigo-500 shadow-lg shadow-cyan-500/30">
-              <LogIn className="h-8 w-8 text-white" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <LogIn className="h-8 w-8" />
             </div>
-            <h2 className="mb-2 text-3xl font-bold">Bem-vindo ao EstudAI</h2>
-            <p className="mb-8 text-white/70">Faça login para continuar</p>
+            <h2 className="mb-2 text-3xl font-bold text-slate-900">Bem-vindo ao EstudAI</h2>
+            <p className="mb-8 text-slate-500">Faça login para continuar</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="rounded-2xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
                 {error}
               </div>
             )}
 
             <div>
-              <label htmlFor="username" className="mb-2 block text-sm font-medium text-white/70">
+              <label htmlFor="username" className="mb-2 block text-sm font-medium text-slate-600">
                 Usuário
               </label>
               <input
@@ -64,7 +60,7 @@ const Login = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-900/50 px-4 py-3 text-white placeholder:text-white/40 focus:border-cyan-400/60 focus:outline-none"
+                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-primary/40 focus:outline-none"
                 placeholder="Digite seu usuário"
                 required
                 disabled={isLoading}
@@ -72,7 +68,7 @@ const Login = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-2 block text-sm font-medium text-white/70">
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-600">
                 Senha
               </label>
               <div className="relative">
@@ -81,7 +77,7 @@ const Login = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900/50 px-4 py-3 pr-12 text-white placeholder:text-white/40 focus:border-cyan-400/60 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 pr-12 text-slate-900 placeholder:text-slate-400 focus:border-primary/40 focus:outline-none"
                   placeholder="Digite sua senha"
                   required
                   disabled={isLoading}
@@ -89,7 +85,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-white/60 transition hover:text-white"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 transition hover:text-slate-600"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -99,7 +95,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-2xl border border-white/10 bg-white py-3 text-sm font-semibold uppercase tracking-[0.15em] text-slate-900 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-2xl bg-primary py-3 text-sm font-semibold uppercase tracking-[0.15em] text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>

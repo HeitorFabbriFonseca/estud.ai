@@ -13,12 +13,7 @@ function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <div className="relative min-h-screen overflow-hidden bg-[#070d18] text-slate-100">
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -left-24 -top-20 h-72 w-72 rounded-full bg-sky-500/20 blur-[150px]" />
-            <div className="absolute right-[-5%] top-[-10%] h-[360px] w-[360px] rounded-full bg-indigo-700/15 blur-[200px]" />
-            <div className="absolute bottom-[-15%] left-[35%] h-[440px] w-[440px] rounded-full bg-amber-200/10 blur-[220px]" />
-          </div>
+        <div className="min-h-screen bg-[#f7f9fc] text-slate-800">
           <Router>
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -26,10 +21,10 @@ function App() {
                 path="/*"
                 element={
                   <ProtectedRoute>
-                    <div className="relative z-10 flex min-h-screen flex-col gap-4 px-4 py-4 md:px-6 lg:flex-row lg:px-8 lg:py-8">
+                    <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col gap-6 px-4 py-4 md:px-6 lg:flex-row lg:gap-8 lg:px-8 lg:py-10">
                       <Sidebar />
                       <main className="flex-1 overflow-x-hidden">
-                        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 pb-10">
+                        <div className="flex w-full flex-1 flex-col gap-6 pb-12">
                           <Routes>
                             <Route path="/" element={<ChatHistory />} />
                             <Route path="/chat" element={<Chat />} />

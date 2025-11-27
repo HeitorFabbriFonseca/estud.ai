@@ -181,9 +181,9 @@ const ChatHistory = () => {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="frosted-card flex flex-col items-center gap-4">
-          <MessageSquare className="h-8 w-8 text-cyan-200" />
-          <p className="text-white/80">Carregando conversas...</p>
+        <div className="frosted-card flex flex-col items-center gap-4 text-slate-600">
+          <MessageSquare className="h-8 w-8 text-primary" />
+          <p>Carregando conversas...</p>
         </div>
       </div>
     );
@@ -191,19 +191,19 @@ const ChatHistory = () => {
 
   return (
     <div className="w-full space-y-6">
-      <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-8 text-white shadow-xl shadow-black/30 backdrop-blur-lg">
+      <section className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
               {showArchived ? 'Histórico arquivado' : 'Painel de conversas'}
             </p>
-            <h2 className="text-3xl font-semibold">Mantenha seus estudos organizados</h2>
-            <p className="mt-2 text-white/70">Busque, edite títulos e retome discussões rapidamente.</p>
+            <h2 className="text-3xl font-semibold text-slate-900">Mantenha seus estudos organizados</h2>
+            <p className="mt-2 text-slate-500">Busque, edite títulos e retome discussões rapidamente.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleNewChat}
-              className="rounded-3xl bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-900 shadow-lg shadow-cyan-500/20 transition hover:bg-slate-100"
+              className="rounded-3xl bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-primary/30 transition hover:bg-primary/90"
             >
               Nova conversa
             </button>
@@ -211,30 +211,30 @@ const ChatHistory = () => {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Ativas</p>
-            <p className="mt-2 text-3xl font-semibold">{activeCount}</p>
-            <p className="text-sm text-white/60">conversas acompanhando sua evolução</p>
+          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Ativas</p>
+            <p className="mt-2 text-3xl font-semibold text-slate-900">{activeCount}</p>
+            <p className="text-sm text-slate-500">conversas acompanhando sua evolução</p>
           </div>
-          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Arquivadas</p>
-            <p className="mt-2 text-3xl font-semibold">{archivedCount}</p>
-            <p className="text-sm text-white/60">conteúdos guardados para consulta</p>
+          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Arquivadas</p>
+            <p className="mt-2 text-3xl font-semibold text-slate-900">{archivedCount}</p>
+            <p className="text-sm text-slate-500">conteúdos guardados para consulta</p>
           </div>
-          <div className="rounded-2xl border border-white/5 bg-white/[0.04] p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/60">Última atualização</p>
-            <p className="mt-2 text-3xl font-semibold">{lastUpdatedChatDate}</p>
-            <p className="text-sm text-white/60">registro mais recente</p>
+          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Última atualização</p>
+            <p className="mt-2 text-3xl font-semibold text-slate-900">{lastUpdatedChatDate}</p>
+            <p className="text-sm text-slate-500">registro mais recente</p>
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <span className="text-sm text-white/70">Filtro rápido</span>
-          <div className="flex rounded-full border border-white/20 p-1">
+          <span className="text-sm text-slate-500">Filtro rápido</span>
+          <div className="flex rounded-full border border-slate-200 p-1">
             <button
               onClick={() => setShowArchived(false)}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition ${
-                !showArchived ? 'bg-white text-slate-900' : 'text-white/70'
+                !showArchived ? 'bg-primary text-white' : 'text-slate-500'
               }`}
             >
               Ativas
@@ -242,7 +242,7 @@ const ChatHistory = () => {
             <button
               onClick={() => setShowArchived(true)}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition ${
-                showArchived ? 'bg-white text-slate-900' : 'text-white/70'
+                showArchived ? 'bg-primary text-white' : 'text-slate-500'
               }`}
             >
               Arquivadas
@@ -251,46 +251,46 @@ const ChatHistory = () => {
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-white/5 bg-white/[0.04] p-5 shadow-xl shadow-black/30 backdrop-blur-lg">
+        <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">
-            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" />
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-300" />
             <input
               type="text"
               placeholder="Buscar conversas..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900/40 py-3 pl-12 pr-12 text-sm text-white placeholder:text-white/40 focus:border-cyan-400/60 focus:outline-none"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-12 text-sm text-slate-800 placeholder:text-slate-400 focus:border-primary/40 focus:outline-none"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 transition hover:text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-600"
                 aria-label="Limpar busca"
               >
                 <X className="h-5 w-5" />
               </button>
             )}
           </div>
-          <p className="text-xs uppercase tracking-[0.18em] text-white/50">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
             {filteredChats.length} resultado{filteredChats.length === 1 ? '' : 's'}
           </p>
         </div>
       </section>
 
-      <section className="rounded-[32px] border border-white/5 bg-slate-950/50 p-6 shadow-xl shadow-black/30 backdrop-blur-lg">
+      <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
         {filteredChats.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-            <MessageSquare className="h-12 w-12 text-white/30" />
+          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center text-slate-600">
+            <MessageSquare className="h-12 w-12 text-slate-300" />
             <div>
-              <p className="text-lg font-semibold text-white">
+              <p className="text-lg font-semibold text-slate-900">
                 {searchQuery
                   ? 'Nenhuma conversa encontrada'
                   : showArchived
                   ? 'Nenhuma conversa arquivada'
                   : 'Ainda não há conversas'}
               </p>
-              <p className="mt-1 text-sm text-white/60">
+              <p className="mt-1 text-sm text-slate-500">
                 {searchQuery
                   ? 'Tente outros termos ou revise seu histórico.'
                   : showArchived
@@ -301,7 +301,7 @@ const ChatHistory = () => {
             {!showArchived && (
               <button
                 onClick={handleNewChat}
-                className="rounded-3xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-cyan-500/30 hover:from-cyan-400 hover:to-indigo-400"
+                className="rounded-3xl bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-white shadow-lg shadow-primary/30 hover:bg-primary/90"
               >
                 Nova conversa
               </button>
@@ -312,7 +312,7 @@ const ChatHistory = () => {
             {filteredChats.map((chat) => (
               <div
                 key={chat.id}
-                className="group cursor-pointer rounded-3xl border border-white/5 bg-slate-900/50 p-5 transition hover:-translate-y-0.5 hover:border-blue-200/40"
+                className="group cursor-pointer rounded-3xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-primary/40"
                 onClick={() => handleChatClick(chat.id)}
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -331,13 +331,13 @@ const ChatHistory = () => {
                               handleCancelEdit();
                             }
                           }}
-                          className="flex-1 rounded-2xl border border-cyan-400/40 bg-slate-900/40 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
+                          className="flex-1 rounded-2xl border border-primary/30 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/30"
                           autoFocus
                         />
                         <div className="flex items-center gap-2">
                           <button
                             onClick={(e) => handleSaveTitle(chat.id, e)}
-                            className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-2 text-emerald-200 transition hover:bg-emerald-500/20"
+                            className="rounded-2xl border border-emerald-200 bg-emerald-50 p-2 text-emerald-600 transition hover:bg-emerald-100"
                             aria-label="Salvar título"
                           >
                             <Save className="h-4 w-4" />
@@ -347,7 +347,7 @@ const ChatHistory = () => {
                               e.stopPropagation();
                               handleCancelEdit();
                             }}
-                            className="rounded-2xl border border-white/10 bg-white/5 p-2 text-white/70 transition hover:text-white"
+                            className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-500 transition hover:bg-slate-50"
                             aria-label="Cancelar edição"
                           >
                             <X className="h-4 w-4" />
@@ -356,38 +356,38 @@ const ChatHistory = () => {
                       </div>
                     ) : (
                       <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-lg font-semibold text-white truncate">{chat.title}</h3>
-                        {chat.is_archived && <span className="chip border-white/20 text-white/70">Arquivada</span>}
+                        <h3 className="text-lg font-semibold text-slate-900 truncate">{chat.title}</h3>
+                        {chat.is_archived && <span className="chip border-slate-200 text-slate-500">Arquivada</span>}
                       </div>
                     )}
-                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-white/65">
+                    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
                       <span className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
                         {formatDate(chat.updated_at)}
                       </span>
-                      <span className="chip border-white/20 text-white/60">#{chat.id.slice(0, 8)}</span>
+                      <span className="chip border-slate-200 text-slate-500">#{chat.id.slice(0, 8)}</span>
                     </div>
                   </div>
 
                   {editingChatId !== chat.id && (
-                    <div className="flex shrink-0 items-center gap-2 text-white/80 transition sm:justify-end md:opacity-0 md:group-hover:opacity-100">
+                    <div className="flex shrink-0 items-center gap-2 text-slate-600 transition sm:justify-end md:opacity-0 md:group-hover:opacity-100">
                       <button
                         onClick={(e) => handleEditTitle(chat, e)}
-                        className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"
+                        className="rounded-2xl border border-slate-200 bg-slate-50 p-2 transition hover:border-primary/40 hover:text-primary"
                         title="Editar título"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleArchiveChat(chat, e)}
-                        className="rounded-2xl border border-white/10 bg-slate-800/50 p-2 transition hover:border-blue-200/40 hover:text-white"
+                        className="rounded-2xl border border-slate-200 bg-slate-50 p-2 transition hover:border-primary/40 hover:text-primary"
                         title={chat.is_archived ? 'Desarquivar' : 'Arquivar'}
                       >
                         <Archive className="h-4 w-4" />
                       </button>
                       <button
                         onClick={(e) => handleDeleteClick(chat, e)}
-                        className="rounded-2xl border border-rose-300/40 bg-rose-500/15 p-2 text-rose-100 transition hover:bg-rose-500/25"
+                        className="rounded-2xl border border-rose-200 bg-rose-50 p-2 text-rose-500 transition hover:bg-rose-100"
                         title="Deletar conversa"
                       >
                         <Trash2 className="h-4 w-4" />
