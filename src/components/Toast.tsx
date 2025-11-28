@@ -14,40 +14,61 @@ interface ToastProps {
   onClose: (id: string) => void;
 }
 
+const variantStyles = {
+  success: {
+    accent: 'bg-emerald-500',
+    icon: <CheckCircle className="h-5 w-5 text-emerald-500" />,
+    bg: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+  },
+  error: {
+    accent: 'bg-rose-500',
+    icon: <XCircle className="h-5 w-5 text-rose-500" />,
+    bg: 'bg-rose-50 border-rose-200 text-rose-900',
+  },
+  warning: {
+    accent: 'bg-amber-500',
+    icon: <AlertCircle className="h-5 w-5 text-amber-500" />,
+    bg: 'bg-amber-50 border-amber-200 text-amber-900',
+  },
+  info: {
+    accent: 'bg-sky-500',
+    icon: <AlertCircle className="h-5 w-5 text-sky-500" />,
+    bg: 'bg-sky-50 border-sky-200 text-sky-900',
+  },
+};
+
 const ToastComponent = ({ toast, onClose }: ToastProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose(toast.id);
-    }, 3000);
+    }, 3200);
 
     return () => clearTimeout(timer);
   }, [toast.id, onClose]);
 
-  const icons = {
-    success: <CheckCircle className="w-5 h-5" />,
-    error: <XCircle className="w-5 h-5" />,
-    warning: <AlertCircle className="w-5 h-5" />,
-    info: <AlertCircle className="w-5 h-5" />,
-  };
-
-  const colors = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
-  };
+  const variant = variantStyles[toast.type] ?? variantStyles.info;
 
   return (
     <div
-      className={`${colors[toast.type]} border rounded-lg shadow-lg p-4 flex items-center space-x-3 min-w-[300px] max-w-md animate-in slide-in-from-top-5`}
+      className={`relative flex min-w-[320px] max-w-md animate-in slide-in-from-top-5 items-start gap-3 overflow-hidden rounded-2xl border px-5 py-4 shadow-xl shadow-slate-900/10 ${variant.bg}`}
+      role="alert"
     >
-      <div className="flex-shrink-0">{icons[toast.type]}</div>
-      <div className="flex-1 text-sm font-medium">{toast.message}</div>
+      <span className={`absolute inset-y-0 left-0 w-1 ${variant.accent}`} />
+      <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white">
+        {variant.icon}
+      </div>
+      <div className="flex flex-1 flex-col">
+        <p className="text-sm font-medium leading-snug">{toast.message}</p>
+        <span className="mt-1 text-[11px] uppercase tracking-[0.12em] text-slate-400">
+          EstudAI
+        </span>
+      </div>
       <button
         onClick={() => onClose(toast.id)}
-        className="flex-shrink-0 text-gray-400 hover:text-gray-600"
+        className="text-slate-400 transition hover:text-slate-600"
+        aria-label="Fechar aviso"
       >
-        <X className="w-4 h-4" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );

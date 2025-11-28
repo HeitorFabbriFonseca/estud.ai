@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Send, Bot, User, Clock, MessageSquare, Lock } from 'lucide-react';
+import { Send, Bot, User, Clock, MessageSquare, Lock, Sparkles } from 'lucide-react';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { ChatService } from '../services/chatService';
 import type { Chat } from '../types/database';
@@ -25,8 +25,14 @@ const Chat = () => {
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const pollingIntervalRef = useRef<number | null>(null);
   const lastMessageCountRef = useRef<number>(0);
+  const quickPrompts = [
+    'Monte um plano de estudos para revisar SQL em 5 dias.',
+    'Tenho uma prova de Direito do Trabalho dia 15',
+    'Quero aprender sobre o mercado financeiro em 60 dias',
+  ];
 
   const loadChat = async (id: string) => {
     if (!user?.id) return;
@@ -134,6 +140,19 @@ const Chat = () => {
     });
   };
 
+  const formatRelativeDate = (dateString?: string) => {
+    if (!dateString) return 'Agora';
+    const date = new Date(dateString);
+    const diffMs = Date.now() - date.getTime();
+    if (diffMs < 60000) return 'Agora';
+    const minutes = Math.floor(diffMs / 60000);
+    if (minutes < 60) return `há ${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `há ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `há ${days}d`;
+  };
+
   // Função para verificar novas mensagens no Supabase
   const checkForNewMessages = async (chatId: string) => {
     try {
@@ -185,6 +204,11 @@ const Chat = () => {
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
     }
+  };
+
+  const handlePromptInsert = (prompt: string) => {
+    setInput(prompt);
+    textareaRef.current?.focus();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -271,157 +295,207 @@ const Chat = () => {
     }
   };
 
+  const lastUpdateLabel = formatRelativeDate(currentChat?.updated_at);
+  const hasUserMessages = messages.some((message) => message.role === 'user');
+  const conversationStatus = isReadOnly ? 'Arquivada' : 'Em andamento';
+
   if (loadingChat) {
     return (
-      <div className="flex items-center justify-center h-[80vh] w-full max-w-4xl bg-white rounded-lg shadow-lg border">
-        <div className="text-gray-500">Carregando conversa...</div>
+      <div className="w-full">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-slate-700 shadow-sm">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Sparkles className="h-6 w-6 animate-spin" />
+          </div>
+          <p className="text-base font-semibold text-slate-900">Carregando conversa...</p>
+          <p className="text-sm text-slate-500">Estamos preparando seu histórico</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-[80vh] w-full max-w-4xl bg-white rounded-lg shadow-lg border">
-      {/* Header do Chat */}
-      <div className="flex items-center justify-between p-4 border-b bg-gray-50 rounded-t-lg">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-            <Bot className="w-6 h-6 text-white" />
+    <div className="flex h-full w-full flex-1 flex-col lg:min-h-0">
+      <div className="flex h-full flex-1 flex-col rounded-[32px] border border-slate-200 bg-white text-slate-800 shadow-xl shadow-slate-900/5 lg:max-h-[calc(100vh-8rem)]">
+        <div className="flex h-full flex-1 flex-col">
+          <div className="rounded-t-[32px] border-b border-slate-100 bg-slate-50 px-6 py-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Assistente de estudos</p>
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  {currentChat?.title || 'Nova conversa inteligente'}
+                </h2>
+                <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <span>Crie planos personalizados, revise conteúdos e acompanhe sua evolução.</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="chip">{conversationStatus}</span>
+                <span className="chip">{lastUpdateLabel}</span>
+                <span className="chip flex items-center gap-2">
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  {messages.length} mensagens
+                </span>
+                {isReadOnly && (
+                  <span className="chip border-rose-200 text-rose-500">
+                    <Lock className="mr-2 h-3.5 w-3.5" />
+                    Arquivo seguro
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {currentChat?.title || 'Assistente de Estudos'}
-              </h2>
-              {isReadOnly && (
-                <div className="flex items-center space-x-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  <Lock className="w-3 h-3" />
-                  <span>Somente leitura</span>
+
+          <div className="flex-1 px-6 py-6">
+            <div className="flex h-full min-h-0 flex-col space-y-4">
+              {!hasUserMessages && (
+                <div className="shrink-0 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm font-medium text-slate-900">Sugestões rápidas</p>
+                  <p className="text-sm text-slate-500">Use um atalho para começar mais rápido.</p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {quickPrompts.map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={() => handlePromptInsert(prompt)}
+                        className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-left text-sm text-slate-600 transition hover:border-primary/30 hover:text-slate-900"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
-            </div>
-            <p className="text-sm text-gray-600">
-              {currentChat ? `Chat: ${currentChat.id.slice(0, 8)}...` : 'Nova conversa'}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
-          <MessageSquare className="w-4 h-4" />
-          <span>{messages.length} mensagens</span>
-        </div>
-      </div>
 
-      {/* Área de Mensagens */}
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
-        <div className="flex flex-col space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex w-full ${message.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
-            >
-              <div className={`flex max-w-[80%] ${message.role === 'assistant' ? 'flex-row' : 'flex-row-reverse'}`}>
-                {/* Avatar */}
-                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  message.role === 'assistant' 
-                    ? 'bg-blue-600 mr-3' 
-                    : 'bg-gray-600 ml-3'
-                }`}>
-                  {message.role === 'assistant' ? (
-                    <Bot className="w-4 h-4 text-white" />
-                  ) : (
-                    <User className="w-4 h-4 text-white" />
+              <div className="flex-1 min-h-0 overflow-y-auto pr-2 scroll-shadow">
+                <div className="flex flex-col space-y-4">
+                  {messages.map((message, index) => {
+                    const isAssistant = message.role === 'assistant';
+                    return (
+                      <div
+                        key={index}
+                        className={`flex w-full ${isAssistant ? 'justify-start' : 'justify-end'}`}
+                      >
+                        <div
+                          className={`flex max-w-[80%] gap-3 ${isAssistant ? 'flex-row' : 'flex-row-reverse'}`}
+                        >
+                          <div
+                            className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl ${
+                              isAssistant
+                                ? 'border border-slate-200 bg-slate-100 text-primary'
+                                : 'bg-primary text-white'
+                            }`}
+                          >
+                            {isAssistant ? (
+                              <Bot className="h-5 w-5" />
+                            ) : (
+                              <User className="h-5 w-5" />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <div
+                              className={`rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-lg shadow-slate-900/10 ${
+                                isAssistant
+                                  ? 'border border-slate-200 bg-white text-slate-700'
+                                  : 'border border-primary/30 bg-primary text-white'
+                              }`}
+                            >
+                              {isAssistant ? (
+                                <MarkdownRenderer content={message.content} className="space-y-3 text-slate-700" />
+                              ) : (
+                                <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                              )}
+                            </div>
+                            <div
+                              className={`flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-slate-400 ${
+                                isAssistant ? 'justify-start' : 'justify-end'
+                              }`}
+                            >
+                              <Clock className="h-3 w-3" />
+                              {formatTime(message.timestamp)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="flex max-w-[80%] items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-primary">
+                          <Bot className="h-5 w-5" />
+                        </div>
+                        <div className="rounded-3xl border border-slate-200 bg-white px-5 py-3 text-sm text-slate-500">
+                          <div className="flex items-center gap-2">
+                            <span className="flex gap-1">
+                              <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
+                              <span
+                                className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
+                                style={{ animationDelay: '0.1s' }}
+                              />
+                              <span
+                                className="h-2 w-2 animate-bounce rounded-full bg-slate-400"
+                                style={{ animationDelay: '0.2s' }}
+                              />
+                            </span>
+                            <span>Gerando resposta...</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
-                </div>
-                
-                {/* Mensagem */}
-                <div className="flex flex-col">
-                  <div
-                    className={`rounded-lg px-4 py-3 shadow-md ${
-                      message.role === 'assistant'
-                        ? 'bg-white text-gray-900 border border-gray-200'
-                        : 'bg-blue-600 text-white'
-                    }`}
-                  >
-                    {message.role === 'assistant' ? (
-                      <MarkdownRenderer content={message.content} />
-                    ) : (
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
-                    )}
-                  </div>
-                  <div className={`flex items-center mt-1 text-xs text-gray-500 ${
-                    message.role === 'assistant' ? 'justify-start' : 'justify-end'
-                  }`}>
-                    <Clock className="w-3 h-3 mr-1" />
-                    {formatTime(message.timestamp)}
-                  </div>
+                  <div ref={messagesEndRef} />
                 </div>
               </div>
             </div>
-          ))}
-          
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="flex max-w-[80%]">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-3">
-                  <Bot className="w-4 h-4 text-white" />
-                </div>
-                <div className="bg-white text-gray-500 px-4 py-3 rounded-lg shadow-md border border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                    <span className="text-sm">Digitando...</span>
+          </div>
+
+          {!isReadOnly ? (
+            <div className="rounded-b-[32px] border-t border-slate-100 bg-white px-6 py-5">
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col gap-3 md:flex-row md:items-end">
+                  <div className="flex-1 rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 transition focus-within:border-primary/40">
+                    <textarea
+                      ref={textareaRef}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Ex: Tenho uma prova de banco de dados dia 15"
+                      className="max-h-32 min-h-[54px] w-full resize-none bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                      rows={1}
+                      disabled={isLoading}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSubmit(e as any);
+                        }
+                      }}
+                    />
                   </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="flex h-14 w-full items-center justify-center rounded-3xl bg-primary text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 md:w-24"
+                  >
+                    <Send className="h-5 w-5" />
+                  </button>
                 </div>
+              </form>
+              <p className="mt-3 text-center text-xs text-slate-500">
+                Enter envia · Shift + Enter adiciona nova linha
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-b-[32px] border-t border-slate-100 bg-slate-50 px-6 py-5">
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                <Lock className="h-4 w-4" />
+                <span>Esta conversa está arquivada e permanece disponível apenas para leitura.</span>
               </div>
             </div>
           )}
-          <div ref={messagesEndRef} />
         </div>
       </div>
-
-      {/* Área de Input */}
-      {!isReadOnly ? (
-        <div className="border-t bg-white p-4 rounded-b-lg">
-          <form onSubmit={handleSubmit} className="flex items-end space-x-3">
-            <div className="flex-1">
-              <textarea
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Ex: Tenho uma prova de banco de dados dia 15"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                rows={1}
-                disabled={isLoading}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e as any);
-                  }
-                }}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 bg-blue-600 text-white hover:bg-blue-700 h-12 w-12 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send className="w-5 h-5" />
-            </button>
-          </form>
-          
-          <div className="mt-2 text-xs text-gray-500 text-center">
-            Pressione Enter para enviar, Shift+Enter para nova linha
-          </div>
-        </div>
-      ) : (
-        <div className="border-t bg-gray-50 p-4 rounded-b-lg">
-          <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-            <Lock className="w-4 h-4" />
-            <span>Esta conversa está arquivada e não pode ser editada.</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
