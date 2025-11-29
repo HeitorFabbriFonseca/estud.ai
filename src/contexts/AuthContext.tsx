@@ -1,6 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, AuthContextType } from '../types/auth';
+import { User } from '../types/auth';
 import { UserService } from '../services/userService';
+
+interface AuthContextType {
+  user: User | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  updateUser: (user: User) => void;
+  isAuthenticated: boolean;
+  loading: boolean;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,15 +27,17 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Verifica se há um usuário salvo no localStorage
+  
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
+
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
-        // Verificar se o usuário ainda existe no Supabase
+
         if (parsedUser.id) {
           UserService.getUserById(parsedUser.id).then((dbUser) => {
             if (dbUser) {
@@ -37,8 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 email: dbUser.email,
                 avatar: dbUser.avatar || undefined,
               };
+
               setUser(updatedUser);
               localStorage.setItem('user', JSON.stringify(updatedUser));
+            } else {
+              // Usuário não existe mais
+              setUser(null);
+              localStorage.removeItem('user');
             }
           });
         }
@@ -46,24 +62,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.error('Erro ao carregar usuário:', error);
       }
     }
+
+    setLoading(false);
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      // Autenticar usuário usando username e senha
       const dbUser = await UserService.authenticateUser(username, password);
 
       if (dbUser) {
-        const user: User = {
+        const loggedUser: User = {
           id: dbUser.id,
           username: dbUser.username,
           name: dbUser.name,
           email: dbUser.email,
           avatar: dbUser.avatar || undefined,
         };
-        
-        setUser(user);
-        localStorage.setItem('user', JSON.stringify(user));
+
+        setUser(loggedUser);
+        localStorage.setItem('user', JSON.stringify(loggedUser));
+
         return true;
       }
 
@@ -84,17 +102,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
-  const value: AuthContextType = {
-    user,
-    login,
-    logout,
-    updateUser,
-    isAuthenticated: !!user
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        updateUser,
+        isAuthenticated: !!user,
+        loading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
-}; 
+};
