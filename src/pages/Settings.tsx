@@ -70,75 +70,85 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-white rounded-lg shadow-lg border">
-      <div className="p-6 border-b">
-        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
-        <p className="text-gray-600 mt-1">Gerencie suas preferências e configurações do sistema</p>
-      </div>
-
-      <div className="flex-1 p-6 overflow-y-auto">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Dados e Privacidade */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <div className="flex items-center mb-4">
-              <Shield className="w-6 h-6 text-blue-600 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900">Dados e Privacidade</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Exportar Dados</h3>
-                <p className="text-sm text-gray-600 mb-3">Baixe todos os seus dados em formato JSON</p>
-                <button
-                  onClick={handleExportData}
-                  disabled={isExporting}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isExporting ? 'Exportando...' : 'Exportar Dados'}
-                </button>
-              </div>
-              
-              <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Limpar Dados Locais</h3>
-                <p className="text-sm text-gray-600 mb-3">Remova todos os dados salvos localmente (não afeta o banco de dados)</p>
-                <button
-                  onClick={() => setShowClearDialog(true)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  Limpar Dados Locais
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Sobre */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <div className="flex items-center mb-4">
-              <Info className="w-6 h-6 text-blue-600 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900">Sobre o EstudAI</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Versão</h3>
-                <p className="text-sm text-gray-600">1.0.0</p>
-              </div>
-              
-              <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Desenvolvido por</h3>
-                <p className="text-sm text-gray-600">Equipe EstudAI</p>
-              </div>
-              
-              <div className="p-4 bg-white rounded-lg border">
-                <h3 className="font-medium text-gray-900 mb-2">Licença</h3>
-                <p className="text-sm text-gray-600">MIT License</p>
-              </div>
-            </div>
-          </div>
+    <div className="w-full space-y-6">
+      <section className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
+        <div className="flex flex-col gap-4">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Configurações</p>
+          <h1 className="text-3xl font-semibold text-slate-900">Personalize sua experiência</h1>
+          <p className="text-slate-500">
+            Controle seus dados, exporte conversas e saiba mais sobre o EstudAI.
+          </p>
         </div>
+      </section>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl bg-slate-100 p-3 text-primary">
+              <Shield className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-slate-900">Dados e Privacidade</h2>
+              <p className="text-sm text-slate-500">Você tem controle total sobre seus dados.</p>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <h3 className="text-sm font-semibold text-slate-900">Exportar Dados</h3>
+              <p className="mt-1 text-sm text-slate-500">Baixe todos os seus dados em formato JSON.</p>
+              <button
+                onClick={handleExportData}
+                disabled={isExporting}
+                className="mt-4 flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-2 text-sm font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isExporting ? 'Exportando...' : 'Exportar dados'}
+              </button>
+            </div>
+
+            <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
+              <h3 className="text-sm font-semibold text-rose-900">Limpar Dados Locais</h3>
+              <p className="mt-1 text-sm text-rose-600">
+                Remove apenas informações salvas no navegador, sem afetar o banco de dados.
+              </p>
+              <button
+                onClick={() => setShowClearDialog(true)}
+                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-rose-600 transition hover:bg-rose-100"
+              >
+                Limpar dados locais
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl bg-slate-100 p-3 text-indigo-500">
+              <Info className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-slate-900">Sobre o EstudAI</h2>
+              <p className="text-sm text-slate-500">Conheça a plataforma que impulsiona seus estudos.</p>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Versão</p>
+              <p className="mt-1 text-lg font-semibold text-slate-900">1.0.0</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Desenvolvido por</p>
+              <p className="mt-1 text-lg font-semibold text-slate-900">Equipe EstudAI</p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Licença</p>
+              <p className="mt-1 text-lg font-semibold text-slate-900">MIT License</p>
+            </div>
+          </div>
+        </section>
       </div>
 
-      {/* Dialog de Confirmação */}
       <ConfirmDialog
         isOpen={showClearDialog}
         title="Limpar Dados Locais"
